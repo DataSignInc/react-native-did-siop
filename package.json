@@ -1,0 +1,21 @@
+{
+  "name": "react-native-did-siop",
+  "version": "0.1.0",
+  "description": "A React Native library for did-siop v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities). Only including Provider funcionality.",
+  "main": "index.js",
+  "react-native": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Self_Severign_Identity",
+    "DID",
+    "SIOP",
+    "Self_Issued_OpenIDConnect_Provider",
+    "DID_SIOP",
+    "OpenIDConnect",
+    "React_Native"
+  ],
+  "author": "DataSign Inc.",
+  "license": "MIT"
+}
