@@ -8,6 +8,7 @@
   "types": "index.d.ts",
   "scripts": {
     "test": "jest",
+    "build": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [
