@@ -1,4 +1,4 @@
-import {RSA} from 'react-native-rsa-native';
+import {RSA, KeyPair} from 'react-native-rsa-native';
 import {getItem} from '../keychain';
 
 export const generateKeyPair = async () => {

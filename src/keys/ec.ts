@@ -1,4 +1,5 @@
 // Elliptic Curve （楕円曲線） Digital Signature Algorithm
+// @ts-expect-error 7016
 import keyto from '@trust/keyto';
 import {createJWS, ES256KSigner} from 'did-jwt';
 import {ec as EC} from 'elliptic';

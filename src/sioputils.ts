@@ -132,7 +132,7 @@ export class SIOPValidator {
     // https://tools.ietf.org/html/rfc6749#section-2.2
     const valid_client_id = params.client_id;
     // https://tools.ietf.org/html/rfc6749#section-3.1.2
-    const valid_redirect_uri = params.redirect_uri;
+    // const valid_redirect_uri = params.redirect_uri;
   }
 }
 
@@ -155,19 +155,19 @@ export class URLParser {
     this.url = url;
   }
 
-  async parse() {
-    this.validateScheme();
-    const params = this.getParameters();
-    const jwt = params.request;
-    try {
-      const verifiedJWT = await verifyJWT(jwt);
-      const decoded = didJWT.decodeJWT(jwt);
-      return {params: params, request: decoded};
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
+  // async parse() {
+  //   this.validateScheme();
+  //   const params = this.getParameters();
+  //   const jwt = params.request;
+  //   try {
+  //     const verifiedJWT = await verifyJWT(jwt);
+  //     const decoded = didJWT.decodeJWT(jwt);
+  //     return {params: params, request: decoded};
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // }
 
   validateScheme() {
     return this.url.startsWith('openid://');
