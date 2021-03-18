@@ -18,19 +18,6 @@ export class Provider {
     this.expiresIn = 3600;
   }
 
-  async handleParams(params: Request) {
-    try {
-      debug(params);
-      await this.receiveRequestParameters(params);
-      const persona = await this.choosePersona();
-      await this.authenticatePersona(persona);
-      return this.generateResponse(persona);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
   async receiveRequestParameters(params: any) {
     try {
       const validator = new SIOPValidator();
@@ -91,13 +78,6 @@ export class Provider {
       throw new SIOPResponseGenerationError(error);
     }
   }
-
-  // async handle(url: string) {
-  //   console.log('SIOP Request received...');
-  //   const {params, request} = await this.receiveSIOPRequest(url);
-  //   console.log('Generating SIOP Response...');
-  //   return this.generateSIOPResponse(request);
-  // }
 
   async receiveRequest(url: string) {
     throw 'Not Implemented';
