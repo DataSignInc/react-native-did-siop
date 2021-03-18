@@ -1,58 +1,44 @@
-import Identity from './identity';
-import ECKey from './keys/ec';
 import {debug} from './log';
 import {SIOPValidator} from './sioputils';
 import {Request, RequestObject, IDToken} from './siop-schema';
+import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
+import Persona from './persona';
 
 export class Provider {
-  private identity: Identity;
+  private persona: Persona | null;
   private expiresIn: number;
-  constructor(did: string, privateKeyID: string) {
-    this.identity = new Identity(did, new ECKey(privateKeyID));
+  private requestObject: any;
+  public choosePersona: () => Promise<Persona>; // rp => (did, keypairid)
+  constructor(choosePersona: any, authenticatePersona: any) {
+    this.choosePersona = async () => {
+      const [did, keyPairID] = await choosePersona();
+      return new Persona(did, keyPairID, authenticatePersona);
+    };
+    this.persona = null;
     this.expiresIn = 3600;
   }
-  // async handle(url: string) {
-  //   console.log('SIOP Request received...');
-  //   const {params, request} = await this.receiveSIOPRequest(url);
-  //   console.log('Generating SIOP Response...');
-  //   return this.generateSIOPResponse(request);
-  // }
 
-  async handleParams(params: Request) {
-    try {
-      debug(params);
-      const {request, requestObject} = await this.parse(params);
-      await this.identity.authenticateMe();
-      return this.generateSIOPResponse(requestObject);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async parse(params: any) {
+  async receiveRequestParameters(params: any) {
     try {
       const validator = new SIOPValidator();
-      return await validator.validateSIOPRequest(params, this.identity.did);
+      const {request, requestObject} = await validator.validateSIOPRequest(
+        params,
+      );
+      this.requestObject = requestObject;
     } catch (error) {
       console.error(error);
-      throw error;
+      throw new SIOPRequestValidationError(error);
     }
   }
-  // async receiveSIOPRequest(url: string) {
-  //   const parser = new URLParser(url);
-  //   const {params, request} = await parser.parse();
-  //   const key = new Key(request.header);
-  //   const validator = new RequestValidator(key);
-  //   validator.validate(params, request.payload);
 
-  //   return {
-  //     params: params as Request,
-  //     request: request.payload as RequestObject,
-  //   };
-  // }
+  async authenticatePersona(persona: Persona) {
+    if (!persona) {
+      throw Error('persona is not choosed or not found');
+    }
+    return persona.unlockKeyPair();
+  }
 
-  getRequestObject(params: any) {
+  private getRequestObject(params: any) {
     if (params.request) {
       return params.request;
     } else if (params.request_uri) {
@@ -60,31 +46,50 @@ export class Provider {
     }
   }
 
-  async generateIDToken(request: RequestObject) {
+  private async generateIDToken(request: RequestObject, persona: Persona) {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
-      sub: await this.identity.generateSubject(),
-      did: this.identity.did,
+      sub: persona.getSubjectIdentier(),
+      did: persona.did,
       aud: request.client_id,
       iat: issuedAt,
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
-      sub_jwk: await this.identity.generateSubjectJwk(),
+      sub_jwk: persona.getMinimalJWK(),
     };
     debug(idToken);
 
-    const jws = await this.identity.sign(idToken);
+    const jws = await persona.sign(idToken);
     return jws;
   }
 
-  async generateSIOPResponse(request: RequestObject) {
-    const idToken = await this.generateIDToken(request);
-    // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
-    // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
-    // Is `state` not needed neither?
-    const location = `${request.client_id}#id_token=${idToken}`;
-    debug(location);
-    return location;
+  async generateResponse(persona: Persona) {
+    try {
+      const request: RequestObject = this.requestObject;
+      const idToken = await this.generateIDToken(request, persona);
+      // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
+      // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
+      // Is `state` not needed neither?
+      const location = `${request.client_id}#id_token=${idToken}`;
+      debug(location);
+      return location;
+    } catch (error) {
+      throw new SIOPResponseGenerationError(error);
+    }
+  }
+
+  async receiveRequest(url: string) {
+    throw 'Not Implemented';
+    // const parser = new URLParser(url);
+    // const {params, request} = await parser.parse();
+    // const key = new Key(request.header);
+    // const validator = new RequestValidator(key);
+    // validator.validate(params, request.payload);
+
+    // return {
+    //   params: params as Request,
+    //   request: request.payload as RequestObject,
+    // };
   }
 }

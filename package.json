@@ -1,6 +1,6 @@
 {
   "name": "react-native-did-siop",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "A React Native library for did-siop v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities). Only including Provider funcionality.",
   "main": "./dist/index.js",
@@ -8,6 +8,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
+    "watch": "tsc --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "preinstall": "rm -rf node_modules"
   },

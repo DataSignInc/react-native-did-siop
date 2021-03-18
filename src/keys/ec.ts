@@ -21,7 +21,33 @@ export const saveECKey = async (id: string, privateKeyHex: string) => {
   debug(key);
 };
 
+export class ECKeyPair {
+  private keyPair: EC.KeyPair;
+
+  constructor(keyPair: EC.KeyPair) {
+    this.keyPair = keyPair;
+  }
+
+  async sign(payload: any, did: string) {
+    const privateKey = this.keyPair.getPrivate();
+    const signer = await ES256KSigner(privateKey.toString('hex'));
+    return await createJWS(payload, signer, {
+      alg: 'ES256K',
+      typ: 'JWT',
+      kid: did + '#controller',
+    });
+  }
+
+  getJWK() {
+    const publicKey = this.keyPair.getPublic('hex');
+    const a = keyto.from(publicKey, 'blk').toJwk('public');
+    console.log(a);
+    return a;
+  }
+}
+
 const error = 'not authenticated';
+
 class ECKey {
   private keyID: string;
   private privateKey?: string;
@@ -69,7 +95,8 @@ class ECKey {
     });
     const privateKey = this.keyPair.getPrivate('hex');
     const pem = keyto.from(privateKey, 'blk').toString('pem', 'private_pkcs1');
-    await setItem(this.keyID, pem);
+    // await setItem(this.keyID, pem);
+    this.privateKey = privateKey;
     return this.keyPair;
   }
 
@@ -103,3 +130,42 @@ class ECKey {
 }
 
 export default ECKey;
+
+export const generateKeyPair = async () => {
+  const keyPair = ec.genKeyPair({
+    entropy: [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+    ],
+  });
+
+  return new ECKeyPair(keyPair);
+  // const privateKey = this.keyPair.getPrivate('hex');
+  // const pem = keyto.from(privateKey, 'blk').toString('pem', 'private_pkcs1');
+  // // await setItem(this.keyID, pem);
+  // this.privateKey = privateKey;
+  // return this.keyPair;
+};
