@@ -1,3 +1,5 @@
+import {calculateJWKThumprint} from './jwt';
+
 class Persona {
   public did: string;
   private keyPairID: string;
@@ -20,12 +22,17 @@ class Persona {
   }
 
   async getMinimalJWK() {
-    return '';
+    return this.keyPair.getJWK();
   }
 
-  async getSubjectIdentier() {}
+  async getSubjectIdentier() {
+    const jwk = this.getMinimalJWK();
+    return calculateJWKThumprint(jwk);
+  }
 
-  async sign(payload: any) {}
+  async sign(payload: any) {
+    return this.keyPair.sign(payload);
+  }
 }
 
 export default Persona;

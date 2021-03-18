@@ -5,7 +5,7 @@ import {SIOPValidator} from './sioputils';
 import {Request, RequestObject, IDToken} from './siop-schema';
 import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';
-import {generateKeyPair} from './keys/rsa';
+import {generateKeyPair} from './keys/ec';
 
 export class Provider {
   private persona: Persona;
@@ -14,8 +14,6 @@ export class Provider {
   private choosePersona: any; // rp => (did, keypairid)
   private doPersonaAuthentication: any; // (did, keypairid) => Promise<keypair>
   constructor(did: string, privateKeyID: string) {
-    // const keyPair = new ECKey(privateKeyID);
-    // this.identity = new Identity(did, keyPair);
     this.persona = new Persona(did, privateKeyID, generateKeyPair);
     this.expiresIn = 3600;
   }
@@ -62,7 +60,7 @@ export class Provider {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
-      sub: await persona.generateSubject(),
+      sub: await persona.getSubjectIdentier(),
       did: persona.did,
       aud: request.client_id,
       iat: issuedAt,

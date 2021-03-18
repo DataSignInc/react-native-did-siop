@@ -1,5 +1,6 @@
 // Elliptic Curve （楕円曲線） Digital Signature Algorithm
 import keyto from '@trust/keyto';
+import base64url from 'base64url';
 import {createJWS, ES256KSigner} from 'did-jwt';
 import {ec as EC} from 'elliptic';
 import {getItem, setItem} from '../keychain';
@@ -20,6 +21,34 @@ export const saveECKey = async (id: string, privateKeyHex: string) => {
   await setItem(id, key);
   debug(key);
 };
+
+export class ECKeyPair {
+  private keyPair: EC.KeyPair;
+
+  constructor(keyPair: EC.KeyPair) {
+    this.keyPair = keyPair;
+  }
+
+  async sign(payload: any, did: string) {
+    const privateKey = this.keyPair.getPrivate();
+    const signer = await ES256KSigner(privateKey.toString('hex'));
+    return await createJWS(payload, signer, {
+      alg: 'ES256K',
+      typ: 'JWT',
+      kid: did + '#controller',
+    });
+  }
+
+  getJWK() {
+    const publicKey = this.keyPair.getPublic();
+    return {
+      crv: 'secp256k1',
+      kty: 'EC',
+      x: base64url.encode(publicKey.getX().toBuffer()), // TODO avoid node polyfill dependency
+      y: base64url.encode(publicKey.getY().toBuffer()),
+    };
+  }
+}
 
 const error = 'not authenticated';
 class ECKey {
@@ -106,7 +135,7 @@ class ECKey {
 export default ECKey;
 
 export const generateKeyPair = async () => {
-  return ec.genKeyPair({
+  const keyPair = ec.genKeyPair({
     entropy: [
       1,
       2,
@@ -135,6 +164,8 @@ export const generateKeyPair = async () => {
       25,
     ],
   });
+
+  return new ECKeyPair(keyPair);
   // const privateKey = this.keyPair.getPrivate('hex');
   // const pem = keyto.from(privateKey, 'blk').toString('pem', 'private_pkcs1');
   // // await setItem(this.keyID, pem);
