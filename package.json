@@ -3,12 +3,16 @@
   "version": "0.1.1",
   "private": true,
   "description": "A React Native library for did-siop v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities). Only including Provider funcionality.",
-  "main": "./src/index.js",
-  "react-native": "./src/index.js",
+  "main": "./dist/index.js",
+  "react-native": "src/index.js",
   "types": "index.d.ts",
+  "source": "./src/index.ts",
+  "exports": "./dist/index.modern.js",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
+    "build": "microbundle",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [
@@ -49,6 +53,7 @@
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
+    "microbundle": "^0.12.0-next.9",
     "prettier": "^2.2.1",
     "prettier-eslint": "^12.0.0",
     "typescript": "^3.8.3"
