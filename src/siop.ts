@@ -39,7 +39,7 @@ export class Provider {
     }
   }
 
-  getRequestObject(params: any) {
+  private getRequestObject(params: any) {
     if (params.request) {
       return params.request;
     } else if (params.request_uri) {
@@ -47,7 +47,7 @@ export class Provider {
     }
   }
 
-  async generateIDToken(request: RequestObject) {
+  private async generateIDToken(request: RequestObject) {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
