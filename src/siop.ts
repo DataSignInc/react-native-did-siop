@@ -8,7 +8,7 @@ export class Provider {
   private persona: Persona | null;
   private expiresIn: number;
   private requestObject: any;
-  private choosePersona: () => Promise<Persona>; // rp => (did, keypairid)
+  public choosePersona: () => Promise<Persona>; // rp => (did, keypairid)
   constructor(choosePersona: any, authenticatePersona: any) {
     this.choosePersona = async () => {
       const [did, keyPairID] = await choosePersona();
@@ -22,9 +22,9 @@ export class Provider {
     try {
       debug(params);
       await this.receiveRequestParameters(params);
-      this.persona = await this.choosePersona();
-      await this.authenticatePersona();
-      return this.generateResponse(this.persona);
+      const persona = await this.choosePersona();
+      await this.authenticatePersona(persona);
+      return this.generateResponse(persona);
     } catch (error) {
       console.error(error);
       throw error;
@@ -44,11 +44,11 @@ export class Provider {
     }
   }
 
-  async authenticatePersona() {
-    if (!this.persona) {
+  async authenticatePersona(persona: Persona) {
+    if (!persona) {
       throw Error('persona is not choosed or not found');
     }
-    return this.persona.unlockKeyPair();
+    return persona.unlockKeyPair();
   }
 
   private getRequestObject(params: any) {
