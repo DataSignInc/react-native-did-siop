@@ -9,11 +9,10 @@ export class Provider {
   private expiresIn: number;
   private requestObject: any;
   private choosePersona: any; // rp => (did, keypairid)
-  private doPersonaAuthentication: any; // (did, keypairid) => Promise<keypair>
-  constructor(choosePersona: any, doPersonaAuthentication: any) {
+  constructor(choosePersona: any, authenticatePersona: any) {
     this.choosePersona = choosePersona;
     const [did, keyPairID] = this.choosePersona();
-    this.persona = new Persona(did, keyPairID, doPersonaAuthentication);
+    this.persona = new Persona(did, keyPairID, authenticatePersona);
     this.expiresIn = 3600;
   }
 
