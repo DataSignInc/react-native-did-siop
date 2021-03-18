@@ -104,3 +104,40 @@ class ECKey {
 }
 
 export default ECKey;
+
+export const generateKeyPair = async () => {
+  return ec.genKeyPair({
+    entropy: [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+    ],
+  });
+  // const privateKey = this.keyPair.getPrivate('hex');
+  // const pem = keyto.from(privateKey, 'blk').toString('pem', 'private_pkcs1');
+  // // await setItem(this.keyID, pem);
+  // this.privateKey = privateKey;
+  // return this.keyPair;
+};

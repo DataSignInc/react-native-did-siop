@@ -5,18 +5,18 @@ import {SIOPValidator} from './sioputils';
 import {Request, RequestObject, IDToken} from './siop-schema';
 import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';
+import {generateKeyPair} from './keys/rsa';
 
 export class Provider {
-  private identity: Identity;
   private persona: Persona;
   private expiresIn: number;
   private requestObject: any;
   private choosePersona: any; // rp => (did, keypairid)
   private doPersonaAuthentication: any; // (did, keypairid) => Promise<keypair>
   constructor(did: string, privateKeyID: string) {
-    const keyPair = new ECKey(privateKeyID);
-    this.identity = new Identity(did, keyPair, keyPair.generateAndSaveKey);
-    this.persona = new Persona(did, privateKeyID, () => 'test');
+    // const keyPair = new ECKey(privateKeyID);
+    // this.identity = new Identity(did, keyPair);
+    this.persona = new Persona(did, privateKeyID, generateKeyPair);
     this.expiresIn = 3600;
   }
 
@@ -25,7 +25,7 @@ export class Provider {
       debug(params);
       await this.receiveRequestParameters(params);
       await this.authenticatePersona();
-      return this.generateResponse(this.identity);
+      return this.generateResponse(this.persona);
     } catch (error) {
       console.error(error);
       throw error;
@@ -37,7 +37,7 @@ export class Provider {
       const validator = new SIOPValidator();
       const {request, requestObject} = await validator.validateSIOPRequest(
         params,
-        this.identity.did,
+        this.persona.did,
       );
       this.requestObject = requestObject;
     } catch (error) {
@@ -47,7 +47,7 @@ export class Provider {
   }
 
   async authenticatePersona() {
-    return this.identity.authenticateMe();
+    return this.persona.unlockKeyPair();
   }
 
   private getRequestObject(params: any) {
@@ -58,28 +58,28 @@ export class Provider {
     }
   }
 
-  private async generateIDToken(request: RequestObject, identity: Identity) {
+  private async generateIDToken(request: RequestObject, persona: Persona) {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
-      sub: await identity.generateSubject(),
-      did: this.identity.did,
+      sub: await persona.generateSubject(),
+      did: persona.did,
       aud: request.client_id,
       iat: issuedAt,
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
-      sub_jwk: await identity.generateSubjectJwk(),
+      sub_jwk: await persona.getMinimalJWK(),
     };
     debug(idToken);
 
-    const jws = await identity.sign(idToken);
+    const jws = await persona.sign(idToken);
     return jws;
   }
 
-  async generateResponse(identity: Identity) {
+  async generateResponse(persona: Persona) {
     try {
       const request: RequestObject = this.requestObject;
-      const idToken = await this.generateIDToken(request, identity);
+      const idToken = await this.generateIDToken(request, persona);
       // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
       // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
       // Is `state` not needed neither?
