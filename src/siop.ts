@@ -3,6 +3,7 @@ import ECKey from './keys/ec';
 import {debug} from './log';
 import {SIOPValidator} from './sioputils';
 import {Request, RequestObject, IDToken} from './siop-schema';
+import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 
 export class Provider {
   private identity: Identity;
@@ -35,7 +36,7 @@ export class Provider {
       this.requestObject = requestObject;
     } catch (error) {
       console.error(error);
-      throw error;
+      throw new SIOPRequestValidationError(error);
     }
   }
 
@@ -66,15 +67,18 @@ export class Provider {
   }
 
   async generateResponse() {
-    const request: RequestObject = this.requestObject;
-
-    const idToken = await this.generateIDToken(request);
-    // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
-    // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
-    // Is `state` not needed neither?
-    const location = `${request.client_id}#id_token=${idToken}`;
-    debug(location);
-    return location;
+    try {
+      const request: RequestObject = this.requestObject;
+      const idToken = await this.generateIDToken(request);
+      // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
+      // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
+      // Is `state` not needed neither?
+      const location = `${request.client_id}#id_token=${idToken}`;
+      debug(location);
+      return location;
+    } catch (error) {
+      throw new SIOPResponseGenerationError(error);
+    }
   }
 
   // async handle(url: string) {
