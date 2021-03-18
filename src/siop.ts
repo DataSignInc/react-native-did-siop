@@ -60,13 +60,13 @@ export class Provider {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
-      sub: await persona.getSubjectIdentier(),
+      sub: persona.getSubjectIdentier(),
       did: persona.did,
       aud: request.client_id,
       iat: issuedAt,
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
-      sub_jwk: await persona.getMinimalJWK(),
+      sub_jwk: persona.getMinimalJWK(),
     };
     debug(idToken);
 

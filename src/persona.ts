@@ -21,11 +21,11 @@ class Persona {
     this.keyPair = await this.doUnlockKeyPair();
   }
 
-  async getMinimalJWK() {
+  getMinimalJWK() {
     return this.keyPair.getJWK();
   }
 
-  async getSubjectIdentier() {
+  getSubjectIdentier() {
     const jwk = this.getMinimalJWK();
     return calculateJWKThumprint(jwk);
   }

@@ -1,6 +1,5 @@
 // Elliptic Curve （楕円曲線） Digital Signature Algorithm
 import keyto from '@trust/keyto';
-import base64url from 'base64url';
 import {createJWS, ES256KSigner} from 'did-jwt';
 import {ec as EC} from 'elliptic';
 import {getItem, setItem} from '../keychain';
@@ -40,17 +39,15 @@ export class ECKeyPair {
   }
 
   getJWK() {
-    const publicKey = this.keyPair.getPublic();
-    return {
-      crv: 'secp256k1',
-      kty: 'EC',
-      x: base64url.encode(publicKey.getX().toBuffer()), // TODO avoid node polyfill dependency
-      y: base64url.encode(publicKey.getY().toBuffer()),
-    };
+    const publicKey = this.keyPair.getPublic('hex');
+    const a = keyto.from(publicKey, 'blk').toJwk('public');
+    console.log(a);
+    return a;
   }
 }
 
 const error = 'not authenticated';
+
 class ECKey {
   private keyID: string;
   private privateKey?: string;
