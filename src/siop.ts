@@ -10,8 +10,10 @@ export class Provider {
   private requestObject: any;
   private choosePersona: any; // rp => (did, keypairid)
   private doPersonaAuthentication: any; // (did, keypairid) => Promise<keypair>
-  constructor(did: string, privateKeyID: string, doPersonaAuthentication: any) {
-    this.persona = new Persona(did, privateKeyID, doPersonaAuthentication);
+  constructor(choosePersona: any, doPersonaAuthentication: any) {
+    this.choosePersona = choosePersona;
+    const [did, keyPairID] = this.choosePersona();
+    this.persona = new Persona(did, keyPairID, doPersonaAuthentication);
     this.expiresIn = 3600;
   }
 
