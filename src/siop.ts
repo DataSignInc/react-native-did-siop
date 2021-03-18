@@ -7,6 +7,7 @@ import {Request, RequestObject, IDToken} from './siop-schema';
 export class Provider {
   private identity: Identity;
   private expiresIn: number;
+  private requestObject: any;
   constructor(did: string, privateKeyID: string) {
     this.identity = new Identity(did, new ECKey(privateKeyID));
     this.expiresIn = 3600;
@@ -15,11 +16,9 @@ export class Provider {
   async handleParams(params: Request) {
     try {
       debug(params);
-      const {request, requestObject} = await this.receiveRequestParameters(
-        params,
-      );
+      await this.receiveRequestParameters(params);
       await this.identity.authenticateMe();
-      return this.generateResponse(requestObject);
+      return this.generateResponse();
     } catch (error) {
       console.error(error);
       throw error;
@@ -29,7 +28,11 @@ export class Provider {
   async receiveRequestParameters(params: any) {
     try {
       const validator = new SIOPValidator();
-      return await validator.validateSIOPRequest(params, this.identity.did);
+      const {request, requestObject} = await validator.validateSIOPRequest(
+        params,
+        this.identity.did,
+      );
+      this.requestObject = requestObject;
     } catch (error) {
       console.error(error);
       throw error;
@@ -62,7 +65,9 @@ export class Provider {
     return jws;
   }
 
-  async generateResponse(request: RequestObject) {
+  async generateResponse() {
+    const request: RequestObject = this.requestObject;
+
     const idToken = await this.generateIDToken(request);
     // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
     // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
