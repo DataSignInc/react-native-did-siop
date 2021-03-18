@@ -11,26 +11,22 @@ export class Provider {
     this.identity = new Identity(did, new ECKey(privateKeyID));
     this.expiresIn = 3600;
   }
-  // async handle(url: string) {
-  //   console.log('SIOP Request received...');
-  //   const {params, request} = await this.receiveSIOPRequest(url);
-  //   console.log('Generating SIOP Response...');
-  //   return this.generateSIOPResponse(request);
-  // }
 
   async handleParams(params: Request) {
     try {
       debug(params);
-      const {request, requestObject} = await this.parse(params);
+      const {request, requestObject} = await this.receiveRequestParameters(
+        params,
+      );
       await this.identity.authenticateMe();
-      return this.generateSIOPResponse(requestObject);
+      return this.generateResponse(requestObject);
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
-  async parse(params: any) {
+  async receiveRequestParameters(params: any) {
     try {
       const validator = new SIOPValidator();
       return await validator.validateSIOPRequest(params, this.identity.did);
@@ -39,18 +35,6 @@ export class Provider {
       throw error;
     }
   }
-  // async receiveSIOPRequest(url: string) {
-  //   const parser = new URLParser(url);
-  //   const {params, request} = await parser.parse();
-  //   const key = new Key(request.header);
-  //   const validator = new RequestValidator(key);
-  //   validator.validate(params, request.payload);
-
-  //   return {
-  //     params: params as Request,
-  //     request: request.payload as RequestObject,
-  //   };
-  // }
 
   getRequestObject(params: any) {
     if (params.request) {
@@ -78,7 +62,7 @@ export class Provider {
     return jws;
   }
 
-  async generateSIOPResponse(request: RequestObject) {
+  async generateResponse(request: RequestObject) {
     const idToken = await this.generateIDToken(request);
     // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
     // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
@@ -86,5 +70,26 @@ export class Provider {
     const location = `${request.client_id}#id_token=${idToken}`;
     debug(location);
     return location;
+  }
+
+  // async handle(url: string) {
+  //   console.log('SIOP Request received...');
+  //   const {params, request} = await this.receiveSIOPRequest(url);
+  //   console.log('Generating SIOP Response...');
+  //   return this.generateSIOPResponse(request);
+  // }
+
+  async receiveRequest(url: string) {
+    throw 'Not Implemented';
+    // const parser = new URLParser(url);
+    // const {params, request} = await parser.parse();
+    // const key = new Key(request.header);
+    // const validator = new RequestValidator(key);
+    // validator.validate(params, request.payload);
+
+    // return {
+    //   params: params as Request,
+    //   request: request.payload as RequestObject,
+    // };
   }
 }
