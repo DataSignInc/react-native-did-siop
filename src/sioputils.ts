@@ -5,11 +5,11 @@ import {debug} from './log';
 import {Registration, Request, RequestObject, ErrorCode} from './siop-schema';
 
 export class SIOPValidator {
-  async validateSIOPRequest(request: any, did: string) {
+  async validateSIOPRequest(request: any) {
     const jwt: string = request.request;
     let decoded;
     try {
-      await verifyJWT(jwt, did);
+      await verifyJWT(jwt);
       decoded = didJWT.decodeJWT(jwt);
       debug('============ RequestObject ===============', decoded);
       // const key = new Key(decoded.header);

@@ -5,14 +5,16 @@ import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';
 
 export class Provider {
-  private persona: Persona;
+  private persona: Persona | null;
   private expiresIn: number;
   private requestObject: any;
-  private choosePersona: any; // rp => (did, keypairid)
+  private choosePersona: () => Promise<Persona>; // rp => (did, keypairid)
   constructor(choosePersona: any, authenticatePersona: any) {
-    this.choosePersona = choosePersona;
-    const [did, keyPairID] = this.choosePersona();
-    this.persona = new Persona(did, keyPairID, authenticatePersona);
+    this.choosePersona = async () => {
+      const [did, keyPairID] = await choosePersona();
+      return new Persona(did, keyPairID, authenticatePersona);
+    };
+    this.persona = null;
     this.expiresIn = 3600;
   }
 
@@ -20,6 +22,7 @@ export class Provider {
     try {
       debug(params);
       await this.receiveRequestParameters(params);
+      this.persona = await this.choosePersona();
       await this.authenticatePersona();
       return this.generateResponse(this.persona);
     } catch (error) {
@@ -33,7 +36,6 @@ export class Provider {
       const validator = new SIOPValidator();
       const {request, requestObject} = await validator.validateSIOPRequest(
         params,
-        this.persona.did,
       );
       this.requestObject = requestObject;
     } catch (error) {
@@ -43,6 +45,9 @@ export class Provider {
   }
 
   async authenticatePersona() {
+    if (!this.persona) {
+      throw Error('persona is not choosed or not found');
+    }
     return this.persona.unlockKeyPair();
   }
 

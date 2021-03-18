@@ -9,10 +9,10 @@ export interface JWTHeader {
   kid: string;
 }
 
-export const verifyJWT = async (jwt: string, did: string) => {
+export const verifyJWT = async (jwt: string) => {
   await didJWT.verifyJWT(jwt, {
     resolver: getResolver(),
-    audience: did,
+    // audience: did,
   });
 };
 
