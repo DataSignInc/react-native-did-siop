@@ -69,7 +69,8 @@ class ECKey {
     });
     const privateKey = this.keyPair.getPrivate('hex');
     const pem = keyto.from(privateKey, 'blk').toString('pem', 'private_pkcs1');
-    await setItem(this.keyID, pem);
+    // await setItem(this.keyID, pem);
+    this.privateKey = privateKey;
     return this.keyPair;
   }
 

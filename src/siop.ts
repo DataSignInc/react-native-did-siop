@@ -4,16 +4,19 @@ import {debug} from './log';
 import {SIOPValidator} from './sioputils';
 import {Request, RequestObject, IDToken} from './siop-schema';
 import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
+import Persona from './persona';
 
 export class Provider {
   private identity: Identity;
+  private persona: Persona;
   private expiresIn: number;
   private requestObject: any;
   private choosePersona: any; // rp => (did, keypairid)
   private doPersonaAuthentication: any; // (did, keypairid) => Promise<keypair>
   constructor(did: string, privateKeyID: string) {
     const keyPair = new ECKey(privateKeyID);
-    this.identity = new Identity(did, keyPair, keyPair.authenticateKeyOwner);
+    this.identity = new Identity(did, keyPair, keyPair.generateAndSaveKey);
+    this.persona = new Persona(did, privateKeyID, () => 'test');
     this.expiresIn = 3600;
   }
 
