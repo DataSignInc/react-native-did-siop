@@ -23,7 +23,7 @@ const getOptions = (
 };
 
 const isAndroid = () => Platform.OS === 'android';
-const isiOS = () => Platform.OS === 'ios';
+const isOS = () => Platform.OS === 'ios';
 
 export const getFeatureAvailability = async () => {
   return {
