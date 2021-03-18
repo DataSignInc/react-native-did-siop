@@ -19,7 +19,7 @@ export class Provider {
       debug(params);
       await this.receiveRequestParameters(params);
       await this.identity.authenticateMe();
-      return this.generateResponse();
+      return this.generateResponse(this.identity);
     } catch (error) {
       console.error(error);
       throw error;
@@ -48,28 +48,28 @@ export class Provider {
     }
   }
 
-  private async generateIDToken(request: RequestObject) {
+  private async generateIDToken(request: RequestObject, identity: Identity) {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
-      sub: await this.identity.generateSubject(),
+      sub: await identity.generateSubject(),
       did: this.identity.did,
       aud: request.client_id,
       iat: issuedAt,
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
-      sub_jwk: await this.identity.generateSubjectJwk(),
+      sub_jwk: await identity.generateSubjectJwk(),
     };
     debug(idToken);
 
-    const jws = await this.identity.sign(idToken);
+    const jws = await identity.sign(idToken);
     return jws;
   }
 
-  async generateResponse() {
+  async generateResponse(identity: Identity) {
     try {
       const request: RequestObject = this.requestObject;
-      const idToken = await this.generateIDToken(request);
+      const idToken = await this.generateIDToken(request, identity);
       // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
       // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
       // Is `state` not needed neither?
