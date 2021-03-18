@@ -9,8 +9,11 @@ export class Provider {
   private identity: Identity;
   private expiresIn: number;
   private requestObject: any;
+  private choosePersona: any; // rp => (did, keypairid)
+  private doPersonaAuthentication: any; // (did, keypairid) => Promise<keypair>
   constructor(did: string, privateKeyID: string) {
-    this.identity = new Identity(did, new ECKey(privateKeyID));
+    const keyPair = new ECKey(privateKeyID);
+    this.identity = new Identity(did, keyPair, keyPair.authenticateKeyOwner);
     this.expiresIn = 3600;
   }
 
@@ -18,7 +21,7 @@ export class Provider {
     try {
       debug(params);
       await this.receiveRequestParameters(params);
-      await this.identity.authenticateMe();
+      await this.authenticatePersona();
       return this.generateResponse(this.identity);
     } catch (error) {
       console.error(error);
@@ -38,6 +41,10 @@ export class Provider {
       console.error(error);
       throw new SIOPRequestValidationError(error);
     }
+  }
+
+  async authenticatePersona() {
+    return this.identity.authenticateMe();
   }
 
   private getRequestObject(params: any) {
