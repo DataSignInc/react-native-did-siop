@@ -1,7 +1,7 @@
-type DIDMethodPrefix = string;
-type SigningAlgorithm = 'RS256' | 'ES256' | 'ES256K' | 'EdDSA';
+export type DIDMethodPrefix = string;
+export type SigningAlgorithm = 'RS256' | 'ES256' | 'ES256K' | 'EdDSA';
 
-declare interface Registration {
+export declare interface Registration {
   // 2.2.1. Passing Relying Party Registration Metadata by Value
   // 2.2.3. Relying Party Registration Metadata Values
   // This part seems WIP.
@@ -45,7 +45,7 @@ declare interface Registration {
   did?: string;
 }
 
-declare interface Request {
+export declare interface Request {
   // 3.1. Self-Issued OpenID Provider Request
   // https://bitbucket.org/openid/connect/src/2b3f0c276b7ea9917d37dc58c935e382693c15f7/openid-connect-self-issued-v2-1_0.md
 
@@ -72,7 +72,7 @@ declare interface Request {
 
 // https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
 // https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint
-declare interface RequestObject {
+export declare interface RequestObject {
   // required for backward compatibility with the OAuth2 specification [RFC6749]
   scope: string;
   // required for backward compatibility with the OAuth2 specification [RFC6749]
@@ -101,7 +101,7 @@ declare interface RequestObject {
 }
 
 // https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-declare interface IDToken {
+export declare interface IDToken {
   iss: 'https://self-issued.me';
 
   // base64url encoded representation of the thumbprint of the key in the sub_jwk Claim.
@@ -128,7 +128,7 @@ declare interface IDToken {
 }
 
 // https://tools.ietf.org/html/rfc6749#section-4.2.2.1
-type OAuth2ErrorCode =
+export type OAuth2ErrorCode =
   | 'invalid_request'
   | 'unauthorized_client'
   | 'access_denied'
@@ -136,7 +136,7 @@ type OAuth2ErrorCode =
   | 'invalid_scope'
   | 'server_error'
   | 'temporarily_unavailable';
-type OIDCCoreErrorCode =
+export type OIDCCoreErrorCode =
   | 'inteaction_required'
   | 'login_required'
   | 'account_selection_required'
@@ -146,14 +146,14 @@ type OIDCCoreErrorCode =
   | 'request_uri_not_supported'
   | 'registration_not_supported';
 
-type ErrorCode = OIDCCoreErrorCode | OAuth2ErrorCode;
+export type ErrorCode = OIDCCoreErrorCode | OAuth2ErrorCode;
 /*
   Encoded as the url fragment
   example:
   HTTP/1.1 302 Found
   Location: https://client.example.com/cb#error=access_denied&state=xyz
 */
-declare interface ErrorResponse {
+export declare interface ErrorResponse {
   error: ErrorCode;
   error_description?: string;
   error_uri?: string;

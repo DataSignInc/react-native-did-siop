@@ -1,3 +1,5 @@
+import {Registration} from './siop-schema';
+
 export class ProtocolNegotiation {
   private registration: Registration;
   constructor(registration: Registration) {

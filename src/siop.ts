@@ -2,6 +2,7 @@ import Identity from './identity';
 import ECKey from './keys/ec';
 import {debug} from './log';
 import {SIOPValidator} from './sioputils';
+import {Request, RequestObject, IDToken} from './siop-schema';
 
 export class Provider {
   private identity: Identity;

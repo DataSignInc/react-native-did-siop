@@ -2,6 +2,7 @@ import didJWT from 'did-jwt';
 import queryString from 'query-string';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
+import {Registration, Request, RequestObject, ErrorCode} from './siop-schema';
 
 export class SIOPValidator {
   async validateSIOPRequest(request: any, did: string) {
