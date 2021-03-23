@@ -1,9 +1,10 @@
 import didJWT, {JWTHeader} from 'did-jwt';
 import queryString from 'query-string';
 import {getResolver} from './did/resolver';
+import {SIOPRequestValidationError} from './error';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
-import {Registration, Request, RequestObject, ErrorCode} from './siop-schema';
+import {Registration, Request, RequestObject} from './siop-schema';
 import validateRegistraion from './siop-schema.d.validator';
 export class SIOPValidator {
   async validateSIOPRequest(request: any) {
@@ -60,7 +61,7 @@ export class SIOPValidator {
 
     if (registration.jwks_uri) {
       if (registration.jwks_uri !== request.iss) {
-        throw 'error';
+        throw new SIOPRequestValidationError('invalid_request_object');
       }
     }
 
@@ -113,7 +114,7 @@ export class SIOPValidator {
       (!containsRequest && (params.registration || params.registration_uri));
 
     if (!(containsAllRequiredParameters && containsRegistration)) {
-      throw 'invalid_request' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_request');
     }
 
     this.validateScope(params.scope);
@@ -134,27 +135,27 @@ export class SIOPValidator {
     registration?: Registration,
   ) {
     if (!request.client_id || !requestObject.client_id) {
-      throw 'invalid_request_object' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_request_object');
     }
     if (request.client_id !== requestObject.client_id) {
-      throw 'invalid_request_object' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_request_object');
     }
     const client_id = requestObject.client_id;
     if (registration && registration.redirect_uris) {
       if (registration.redirect_uris.includes(client_id)) {
         return; // valid!
       } else {
-        throw 'invalid_request_object' as ErrorCode;
+        throw new SIOPRequestValidationError('invalid_request_object');
       }
     }
   }
 
   validateResponseType(response_type: string) {
     if (!response_type) {
-      throw 'invalid_request_object' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_request');
     }
     if (response_type !== 'id_token') {
-      throw 'unsupported_response_type' as ErrorCode;
+      throw new SIOPRequestValidationError('unsupported_response_type');
     }
   }
 
@@ -162,17 +163,17 @@ export class SIOPValidator {
     if (request || request_uri) {
       return;
     } else {
-      throw 'invalid_request_object' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_request');
     }
   }
 
   validateIss(iss?: string, registration?: Registration) {
     if (!iss) {
-      throw 'invalid_request_object' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_request_object');
     }
     if (registration && registration.did) {
       if (iss !== registration.did) {
-        throw 'invalid_request_object' as ErrorCode;
+        throw new SIOPRequestValidationError('invalid_request_object');
       } else {
         return; // valid!
       }
@@ -181,13 +182,13 @@ export class SIOPValidator {
 
   validateScope(scope?: string) {
     if (!scope) {
-      throw 'invalid_scope' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_scope');
     }
     const scopeArray = scope.split(' ');
     const isScopeValid =
       scopeArray.includes('openid') && scopeArray.includes('did_authn');
     if (!isScopeValid) {
-      throw 'invalid_scope' as ErrorCode;
+      throw new SIOPRequestValidationError('invalid_scope');
     }
   }
 
@@ -208,7 +209,7 @@ const getRegistration = async (params: any) => {
     const jsonData = await result.json();
     return validateRegistraion(jsonData);
   }
-  throw 'invalid_request_object' as ErrorCode;
+  throw new SIOPRequestValidationError('invalid_request_object');
 };
 
 export class URLParser {

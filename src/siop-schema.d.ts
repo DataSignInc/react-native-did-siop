@@ -136,14 +136,24 @@ export type OAuth2ErrorCode =
   | 'invalid_scope'
   | 'server_error'
   | 'temporarily_unavailable';
+
+// https://openid.net/specs/openid-connect-core-1_0.html#AuthError
 export type OIDCCoreErrorCode =
   | 'inteaction_required'
   | 'login_required'
   | 'account_selection_required'
+  // The Authorization Server requires End-User consent.
+  // This error MAY be returned when the prompt parameter value in the Authentication Request is none, but the Authentication Request cannot be completed without displaying a user interface for End-User consent.
   | 'consent_required'
+  // The request_uri in the Authorization Request returns an error or contains invalid data.
+  | 'invalid_request_uri'
+  // The request parameter contains an invalid Request Object
   | 'invalid_request_object'
+  // The OP does not support use of the request parameter
   | 'request_not_supported'
+  // The OP does not support use of the request_uri parameter
   | 'request_uri_not_supported'
+  // The OP does not support use of the registration parameter
   | 'registration_not_supported';
 
 export type ErrorCode = OIDCCoreErrorCode | OAuth2ErrorCode;
