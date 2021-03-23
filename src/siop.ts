@@ -5,7 +5,6 @@ import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';
 
 export class Provider {
-  private persona: Persona | null;
   private expiresIn: number;
   private requestObject: any;
   public choosePersona: () => Promise<Persona>; // rp => (did, keypairid)
@@ -14,7 +13,6 @@ export class Provider {
       const [did, keyPairID] = await choosePersona();
       return new Persona(did, keyPairID, authenticatePersona);
     };
-    this.persona = null;
     this.expiresIn = 3600;
   }
 
@@ -25,6 +23,7 @@ export class Provider {
         params,
       );
       this.requestObject = requestObject;
+      return requestObject.client_id;
     } catch (error) {
       console.error(error);
       throw new SIOPRequestValidationError(error);
