@@ -225,11 +225,12 @@ const getRegistration = async (params: any) => {
   const registrationWithoutType: any = await resolveUriParameter(
     params.registration,
     params.registration_uri,
+    'invalid_registration_uri',
   );
   try {
     return validateRegistraion(registrationWithoutType);
   } catch (error) {
-    throw new SIOPRequestValidationError('invalid_request');
+    throw new SIOPRequestValidationError('invalid_registration_object');
   }
 };
 

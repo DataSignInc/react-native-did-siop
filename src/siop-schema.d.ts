@@ -156,7 +156,22 @@ export type OIDCCoreErrorCode =
   // The OP does not support use of the registration parameter
   | 'registration_not_supported';
 
-export type ErrorCode = OIDCCoreErrorCode | OAuth2ErrorCode;
+export type SIOPv2ErrorCode =
+  // The Self-Issued OP does not support all of the DID methods included in did_methods_supported parameter.
+
+  | 'did_methods_not_supported'
+  // The Self-Issued OP does not support all of the subject identifier types included in subject_identifier_types_supported parameter.
+  | 'subject_identifier_types_not_supported'
+  // The Self-Issued OP does not support all of the credential formats included in credential_formats_supported parameter.
+  | 'credential_formats_not_supported'
+  // The Self-Issued OP does not support more than one of the RP Registration Metadata values defined in Section 4.3. When not supported metadata values are DID methods, subject identifier types, or credential formats, more specific error message must be used.
+  | 'value_not_supported'
+  // The registration_uri in the Self-Issued OpenID Provider request returns an error or contains invalid data.
+  | 'invalid_registration_uri'
+  // The registration parameter contains an invalid RP Registration Metadata Object.
+  | 'invalid_registration_object';
+
+export type ErrorCode = OIDCCoreErrorCode | OAuth2ErrorCode | SIOPv2ErrorCode;
 /*
   Encoded as the url fragment
   example:
