@@ -108,20 +108,25 @@ export class SIOPValidator {
       params.scope && params.response_type && params.client_id;
 
     const containsRequest = params.request || params.request_uri;
-    const containsRegistration =
-      (containsRequest &&
-        (requestObject.registration || requestObject.registration_uri)) ||
-      (!containsRequest && (params.registration || params.registration_uri));
-
-    if (!(containsAllRequiredParameters && containsRegistration)) {
+    if (!containsRequest) {
+      // this SIOP request asks me not to authentication but to just register RP meta data.
+      // In this case params MUST contain registration or registration_uri params.
+      if (!params.registration && !params.registration_uri) {
+        throw new SIOPRequestValidationError('invalid_request');
+      } else {
+        // TODO: implement registration only flow.
+        throw new SIOPRequestValidationError('registration_not_supported');
+      }
+    }
+    if (!containsAllRequiredParameters) {
       throw new SIOPRequestValidationError('invalid_request');
     }
 
     this.validateScope(params.scope);
     this.validateResponseType(params.response_type);
 
-    const registration = await getRegistration(params);
     const request = await getRequestObject(params);
+    const registration = await getRegistration(request);
 
     this.validateClientId(params, request, registration);
 
@@ -221,10 +226,10 @@ const getRequestObject = async (params: any) => {
   );
 };
 
-const getRegistration = async (params: any) => {
+const getRegistration = async (request: any) => {
   const registrationWithoutType: any = await resolveUriParameter(
-    params.registration,
-    params.registration_uri,
+    request.registration,
+    request.registration_uri,
     'invalid_registration_uri',
   );
   try {
