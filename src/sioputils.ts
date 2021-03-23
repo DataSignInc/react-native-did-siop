@@ -4,7 +4,7 @@ import {getResolver} from './did/resolver';
 import {SIOPRequestValidationError} from './error';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
-import {Registration, Request, RequestObject} from './siop-schema';
+import {ErrorCode, Registration, Request, RequestObject} from './siop-schema';
 import validateRegistraion from './siop-schema.d.validator';
 export class SIOPValidator {
   async validateSIOPRequest(request: any) {
@@ -121,7 +121,7 @@ export class SIOPValidator {
     this.validateResponseType(params.response_type);
 
     const registration = await getRegistration(params);
-    const request = await this.getRequestObject(requestObject.request);
+    const request = await getRequestObject(params);
 
     this.validateClientId(params, request, registration);
 
@@ -159,25 +159,6 @@ export class SIOPValidator {
     }
   }
 
-  async getRequestObject(request?: any, request_uri?: string) {
-    if (!request && !request_uri) {
-      throw new SIOPRequestValidationError('invalid_request');
-    }
-    if (request) {
-      return request;
-    } else if (request_uri) {
-      try {
-        if (request_uri.startsWith('https://')) {
-          const result = await fetch(request_uri);
-          const jsonData = await result.json();
-          return jsonData;
-        }
-      } catch (error) {
-        throw new SIOPRequestValidationError('invalid_request_uri');
-      }
-    }
-  }
-
   validateIss(iss?: string, registration?: Registration) {
     if (!iss) {
       throw new SIOPRequestValidationError('invalid_request_object');
@@ -209,18 +190,47 @@ export class SIOPValidator {
   }
 }
 
-const getRegistration = async (params: any) => {
-  if (params.registration) {
-    return validateRegistraion(params.registration);
-  } else if (
-    params.registration_uri &&
-    params.registration_uri.startsWith('https://')
-  ) {
-    const result = await fetch(params.registration_uri);
-    const jsonData = await result.json();
-    return validateRegistraion(jsonData);
+const resolveUriParameter = async (
+  something?: any,
+  something_uri?: string,
+  errorCodeOnInvalidUri: ErrorCode = 'invalid_request',
+) => {
+  if (!something && !something_uri) {
+    throw new SIOPRequestValidationError('invalid_request');
   }
-  throw new SIOPRequestValidationError('invalid_request_object');
+  if (something) {
+    return something;
+  } else if (something_uri) {
+    try {
+      if (something_uri.startsWith('https://')) {
+        const result = await fetch(something_uri);
+        const jsonData = await result.json();
+        return jsonData;
+      }
+    } catch (error) {
+      throw new SIOPRequestValidationError(errorCodeOnInvalidUri);
+    }
+  }
+};
+
+const getRequestObject = async (params: any) => {
+  return await resolveUriParameter(
+    params.request,
+    params.request_uri,
+    'invalid_request_uri',
+  );
+};
+
+const getRegistration = async (params: any) => {
+  const registrationWithoutType: any = await resolveUriParameter(
+    params.registration,
+    params.registration_uri,
+  );
+  try {
+    return validateRegistraion(registrationWithoutType);
+  } catch (error) {
+    throw new SIOPRequestValidationError('invalid_request');
+  }
 };
 
 export class URLParser {
