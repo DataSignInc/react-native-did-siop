@@ -65,12 +65,7 @@ export class SIOPValidator {
 
     // OIDC validation
     const containsAllRequiredParameters =
-      params.scope &&
-      params.response_type &&
-      params.client_id &&
-      params.client_id === requestObject.client_id &&
-      requestObject.iss &&
-      requestObject.kid;
+      params.scope && params.response_type && params.client_id;
 
     const containsRequest = params.request || params.request_uri;
     const containsRegistration =
@@ -83,15 +78,53 @@ export class SIOPValidator {
     }
 
     this.validateScope(params.scope);
-
-    if (params.response_type !== 'id_token') {
-      throw 'unsupported_response_type' as ErrorCode;
-    }
+    this.validateResponseType(params.response_type);
 
     const registration = getRegistration(params);
 
+    this.validateClientId(params, requestObject, registration);
+    this.validateRequestUri(requestObject.request);
+
     this.validateIss(requestObject.iss, registration);
     this.validateKid(requestObject.kid, registration);
+  }
+
+  validateClientId(
+    request: Request,
+    requestObject: RequestObject,
+    registration?: Registration,
+  ) {
+    if (!request.client_id || !requestObject.client_id) {
+      throw 'invalid_request_object' as ErrorCode;
+    }
+    if (request.client_id !== requestObject.client_id) {
+      throw 'invalid_request_object' as ErrorCode;
+    }
+    const client_id = requestObject.client_id;
+    if (registration && registration.redirect_uris) {
+      if (registration.redirect_uris.includes(client_id)) {
+        return; // valid!
+      } else {
+        throw 'invalid_request_object' as ErrorCode;
+      }
+    }
+  }
+
+  validateResponseType(response_type: string) {
+    if (!response_type) {
+      throw 'invalid_request_object' as ErrorCode;
+    }
+    if (response_type !== 'id_token') {
+      throw 'unsupported_response_type' as ErrorCode;
+    }
+  }
+
+  validateRequestUri(request?: any, request_uri?: string) {
+    if (request || request_uri) {
+      return;
+    } else {
+      throw 'invalid_request_object' as ErrorCode;
+    }
   }
 
   validateIss(iss?: string, registration?: Registration) {
@@ -107,7 +140,10 @@ export class SIOPValidator {
     }
   }
 
-  validateScope(scope: string) {
+  validateScope(scope?: string) {
+    if (!scope) {
+      throw 'invalid_scope' as ErrorCode;
+    }
     const scopeArray = scope.split(' ');
     const isScopeValid =
       scopeArray.includes('openid') && scopeArray.includes('did_authn');
