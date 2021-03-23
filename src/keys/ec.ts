@@ -2,7 +2,7 @@
 import keyto from '@trust/keyto';
 import {createJWS, ES256KSigner} from 'did-jwt';
 import {ec as EC} from 'elliptic';
-import {getItem, setItem} from '../keychain';
+// import {getItem, setItem} from '../keychain';
 import {debug} from '../log';
 import {fromPemToHex, generateJwkFromPrivateKeyPEM} from './utils';
 
@@ -15,9 +15,9 @@ export const getPublicKey = (privateKey: string) => {
   return publicKey;
 };
 
-export const saveECKey = async (id: string, privateKeyHex: string) => {
+const saveECKey = async (id: string, privateKeyHex: string) => {
   const key = keyto.from(privateKeyHex, 'blk').toString('pem', 'private_pkcs1');
-  await setItem(id, key);
+  // await setItem(id, key);
   debug(key);
 };
 
@@ -59,7 +59,7 @@ class ECKey {
   }
 
   async authenticateKeyOwner() {
-    this.privateKey = await getItem(this.keyID);
+    // this.privateKey = await getItem(this.keyID);
     return this.privateKey;
   }
 

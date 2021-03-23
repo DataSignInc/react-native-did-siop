@@ -1,15 +1,15 @@
 import {RSA, KeyPair} from 'react-native-rsa-native';
-import {getItem} from '../keychain';
+// import {getItem} from '../keychain';
 
 export const generateKeyPair = async () => {
   const keys = await RSA.generateKeys(4096); // set key size
   return keys;
 };
 
-export const sign = async (data: string) => {
-  const privateKey = await getItem('my-first-private-key');
-  return await RSA.sign(data, privateKey);
-};
+// export const sign = async (data: string) => {
+//   const privateKey = await getItem('my-first-private-key');
+//   return await RSA.sign(data, privateKey);
+// };
 
 export const testGeneration = async () => {
   let message = 'my secret message';
