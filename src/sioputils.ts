@@ -4,7 +4,7 @@ import {getResolver} from './did/resolver';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
 import {Registration, Request, RequestObject, ErrorCode} from './siop-schema';
-
+import validateRegistraion from './siop-schema.d.validator';
 export class SIOPValidator {
   async validateSIOPRequest(request: any) {
     const jwt: string = request.request;
@@ -199,14 +199,14 @@ export class SIOPValidator {
 
 const getRegistration = async (params: any) => {
   if (params.registration) {
-    return params.registration;
+    return validateRegistraion(params.registration);
   } else if (
     params.registration_uri &&
     params.registration_uri.startsWith('https://')
   ) {
     const result = await fetch(params.registration_uri);
     const jsonData = await result.json();
-    return jsonData as Registration;
+    return validateRegistraion(jsonData);
   }
 };
 
