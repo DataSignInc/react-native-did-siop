@@ -41,6 +41,8 @@ export class SIOPValidator {
     registration: Registration,
     jwtHeader: JWTHeader,
   ) {
+    // TODO: implement all vefirication logic
+
     // TOOD: Reorder the verification steps for efficiency.
     // The order described in the v0.1 spec is inefficient.
     // (why it places resolution of did documents before checking `iss` and `kid`?)
@@ -53,17 +55,18 @@ export class SIOPValidator {
     // verify siop request according to the verification method above
 
     if (!request.scope.includes('did_authn')) {
-      return; // DID Authn verification is not needed.
+      throw new SIOPRequestValidationError('invalid_scope');
     }
 
-    const resolver = getResolver();
-    const document = resolver.resolve(request.iss);
+    // const resolver = getResolver();
+    // const document = resolver.resolve(request.iss);
 
-    if (registration.jwks_uri) {
-      if (registration.jwks_uri !== request.iss) {
-        throw new SIOPRequestValidationError('invalid_request_object');
-      }
-    }
+    // if (registration.jwks_uri) {
+    //   if (jwskContains(registration.jwks, request.iss)) {
+    //     // if (registration.jwks_uri !== request.iss) {
+    //     throw new SIOPRequestValidationError('invalid_request_object');
+    //   }
+    // }
 
     // TODO: get verification method from document corresponding with `kid`
 
@@ -71,9 +74,9 @@ export class SIOPValidator {
       // verification success
       // because did authn is already done at previous JWS signature verification.
       return;
+    } else {
+      // TODO: JWS signature verification with the key of request.kid
     }
-
-    // TODO: JWS signature verification with the key of request.kid
   }
 
   async validateOIDCParameters(params: Request, requestObject: any) {
@@ -127,11 +130,12 @@ export class SIOPValidator {
 
     const request = await getRequestObject(params);
     const registration = await getRegistration(request);
+    const jwks = await getJwks(registration);
 
     this.validateClientId(params, request, registration);
 
     this.validateIss(request.iss, registration);
-    this.validateKid(request.kid, registration);
+    this.validateKid(request.kid, registration, jwks);
   }
 
   validateClientId(
@@ -189,9 +193,14 @@ export class SIOPValidator {
     }
   }
 
-  validateKid(kid?: string, registraion?: Registration) {
-    // TODO: implement after JWKS is implemented
-    return kid && true;
+  validateKid(kid?: string, registraion?: Registration, jwks?: any) {
+    // Equality check between kid and JWTHeader.kid (and subsequent verification steps) are done at did authn verification phase.
+    // TODO understanding JWSK data structure
+    // if (jwks && !jwks.includes(kid)) {
+    //   throw new SIOPRequestValidationError('invalid_request_object');
+    // } else {
+    //   return;
+    // }
   }
 }
 
@@ -237,6 +246,10 @@ const getRegistration = async (request: any) => {
   } catch (error) {
     throw new SIOPRequestValidationError('invalid_registration_object');
   }
+};
+
+const getJwks = async (registration: Registration) => {
+  return await resolveUriParameter(registration.jwks, registration.jwks_uri);
 };
 
 export class URLParser {
