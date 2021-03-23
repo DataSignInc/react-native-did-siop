@@ -1,5 +1,6 @@
-import didJWT from 'did-jwt';
+import didJWT, {JWTHeader} from 'did-jwt';
 import queryString from 'query-string';
+import {getResolver} from './did/resolver';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
 import {Registration, Request, RequestObject, ErrorCode} from './siop-schema';
@@ -21,7 +22,12 @@ export class SIOPValidator {
     // validate paramters
     const requestObject = decoded.payload;
     this.validateOIDCParameters(request, requestObject);
-    this.validateDIDAuthnParameters(request);
+    const registration = await getRegistration(request);
+    this.validateDIDAuthnParameters(
+      requestObject,
+      registration,
+      decoded.header,
+    );
 
     return {
       request: request as Request,
@@ -29,15 +35,47 @@ export class SIOPValidator {
     };
   }
 
-  validateDIDAuthnParameters(params: Request) {
+  validateDIDAuthnParameters(
+    request: RequestObject,
+    registration: Registration,
+    jwtHeader: JWTHeader,
+  ) {
+    // TOOD: Reorder the verification steps for efficiency.
+    // The order described in the v0.1 spec is inefficient.
+    // (why it places resolution of did documents before checking `iss` and `kid`?)
+
     // test if scope contains `did_authn`
     // resolve did doc from `iss`
     // if jwks_uri is present: test if `jwks_uri` == `iss`
-    // determine the verification method from that document
+    // determine the verification method from that document (with kid in SIOP request)
+    //
     // verify siop request according to the verification method above
+
+    if (!request.scope.includes('did_authn')) {
+      return; // DID Authn verification is not needed.
+    }
+
+    const resolver = getResolver();
+    const document = resolver.resolve(request.iss);
+
+    if (registration.jwks_uri) {
+      if (registration.jwks_uri !== request.iss) {
+        throw 'error';
+      }
+    }
+
+    // TODO: get verification method from document corresponding with `kid`
+
+    if (request.kid === jwtHeader.kid) {
+      // verification success
+      // because did authn is already done at previous JWS signature verification.
+      return;
+    }
+
+    // TODO: JWS signature verification with the key of request.kid
   }
 
-  validateOIDCParameters(params: Request, requestObject: any) {
+  async validateOIDCParameters(params: Request, requestObject: any) {
     /*
       OAuth 2.0 validation - https://tools.ietf.org/html/rfc6749#section-4.1.1
         test if all the required parameters are present and valid
@@ -80,7 +118,7 @@ export class SIOPValidator {
     this.validateScope(params.scope);
     this.validateResponseType(params.response_type);
 
-    const registration = getRegistration(params);
+    const registration = await getRegistration(params);
 
     this.validateClientId(params, requestObject, registration);
     this.validateRequestUri(requestObject.request);
@@ -173,11 +211,13 @@ export class SIOPValidator {
   }
 }
 
-const getRegistration = (params: any) => {
+const getRegistration = async (params: any) => {
   if (params.registration) {
     return params.registration;
   } else if (params.registration_uri) {
-    return {};
+    const result = await fetch(params.registration_uri);
+    const jsonData = await result.json();
+    return jsonData as Registration;
   }
 };
 
