@@ -121,12 +121,12 @@ export class SIOPValidator {
     this.validateResponseType(params.response_type);
 
     const registration = await getRegistration(params);
+    const request = await this.getRequestObject(requestObject.request);
 
-    this.validateClientId(params, requestObject, registration);
-    this.validateRequestUri(requestObject.request);
+    this.validateClientId(params, request, registration);
 
-    this.validateIss(requestObject.iss, registration);
-    this.validateKid(requestObject.kid, registration);
+    this.validateIss(request.iss, registration);
+    this.validateKid(request.kid, registration);
   }
 
   validateClientId(
@@ -159,11 +159,22 @@ export class SIOPValidator {
     }
   }
 
-  validateRequestUri(request?: any, request_uri?: string) {
-    if (request || request_uri) {
-      return;
-    } else {
+  async getRequestObject(request?: any, request_uri?: string) {
+    if (!request && !request_uri) {
       throw new SIOPRequestValidationError('invalid_request');
+    }
+    if (request) {
+      return request;
+    } else if (request_uri) {
+      try {
+        if (request_uri.startsWith('https://')) {
+          const result = await fetch(request_uri);
+          const jsonData = await result.json();
+          return jsonData;
+        }
+      } catch (error) {
+        throw new SIOPRequestValidationError('invalid_request_uri');
+      }
     }
   }
 
