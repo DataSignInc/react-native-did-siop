@@ -172,7 +172,7 @@ export class SIOPValidator {
       if (iss !== registration.did) {
         throw new SIOPRequestValidationError('invalid_request_object');
       } else {
-        return; // valid!
+        return; // valid
       }
     }
   }

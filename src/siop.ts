@@ -37,14 +37,6 @@ export class Provider {
     return persona.unlockKeyPair();
   }
 
-  private getRequestObject(params: any) {
-    if (params.request) {
-      return params.request;
-    } else if (params.request_uri) {
-      return {};
-    }
-  }
-
   private async generateIDToken(request: RequestObject, persona: Persona) {
     const issuedAt = Math.floor(Date.now() / 1000);
     const idToken: IDToken = {
