@@ -1,7 +1,7 @@
 export type DIDMethodPrefix = string;
 export type SigningAlgorithm = 'RS256' | 'ES256' | 'ES256K' | 'EdDSA';
 
-export declare interface Registration {
+export interface Registration {
   // 2.2.1. Passing Relying Party Registration Metadata by Value
   // 2.2.3. Relying Party Registration Metadata Values
   // This part seems WIP.

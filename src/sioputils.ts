@@ -208,6 +208,7 @@ const getRegistration = async (params: any) => {
     const jsonData = await result.json();
     return validateRegistraion(jsonData);
   }
+  throw 'invalid_request_object' as ErrorCode;
 };
 
 export class URLParser {
