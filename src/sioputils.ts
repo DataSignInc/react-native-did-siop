@@ -200,7 +200,10 @@ export class SIOPValidator {
 const getRegistration = async (params: any) => {
   if (params.registration) {
     return params.registration;
-  } else if (params.registration_uri) {
+  } else if (
+    params.registration_uri &&
+    params.registration_uri.startsWith('https://')
+  ) {
     const result = await fetch(params.registration_uri);
     const jsonData = await result.json();
     return jsonData as Registration;
