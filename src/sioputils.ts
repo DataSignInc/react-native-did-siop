@@ -77,7 +77,10 @@ export class SIOPValidator {
 
   async validateOIDCParameters(params: Request, requestObject: any) {
     /*
-      OAuth 2.0 validation - https://tools.ietf.org/html/rfc6749#section-4.1.1
+      Procedure:
+
+
+      OAuth 2.0 validation (omitted to avoid duplicated steps) - https://tools.ietf.org/html/rfc6749#section-4.1.1
         test if all the required parameters are present and valid
         test if `redirect_uri` matches to the registered one
       test if scope contains 'openid'
@@ -98,8 +101,6 @@ export class SIOPValidator {
 
       test if scope contains `did_authn`
       */
-
-    this.validateOAuth2Parameters(params);
 
     // OIDC validation
     const containsAllRequiredParameters =
@@ -193,21 +194,6 @@ export class SIOPValidator {
   validateKid(kid?: string, registraion?: Registration) {
     // TODO: implement after JWKS is implemented
     return kid && true;
-  }
-
-  validateOAuth2Parameters(params: Request) {
-    /*
-      OAuth 2.0 validation - https://tools.ietf.org/html/rfc6749#section-4.1.1
-        test if all the required parameters are present and valid
-          required parameters are response_type and client_id
-        test if `redirect_uri` matches to the registered one
-       */
-    const validResponseType =
-      params.response_type && params.response_type == 'token';
-    // https://tools.ietf.org/html/rfc6749#section-2.2
-    const valid_client_id = params.client_id;
-    // https://tools.ietf.org/html/rfc6749#section-3.1.2
-    // const valid_redirect_uri = params.redirect_uri;
   }
 }
 
