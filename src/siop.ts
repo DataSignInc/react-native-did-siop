@@ -55,6 +55,7 @@ export class Provider {
       iat: issuedAt,
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
+      state: request.state,
       sub_jwk: persona.getMinimalJWK(),
     };
     debug(idToken);
