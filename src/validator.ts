@@ -75,6 +75,12 @@ export default class SIOPValidator {
       return;
     } else {
       // TODO: JWS signature verification with the key of request.kid
+      console.error(
+        'request.kid ===',
+        request.kid,
+        'jwtHeader.kid ===',
+        jwtHeader.kid,
+      );
       throw new SIOPRequestValidationError('invalid_request');
     }
   }
