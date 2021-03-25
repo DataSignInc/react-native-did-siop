@@ -13,7 +13,7 @@ export interface Registration {
   response_types_supported: ['id_token'];
 
   scopes_supported: ('openid' | 'profile' | 'email' | 'address' | 'phone')[];
-  subject_types_supported: ('pairwase' | 'public')[];
+  subject_types_supported: ('pairwise' | 'public')[];
   // jkt: JWK Thumbprint Subject sub type. [RFC7638]
   // DIDMethodPrefix: did Decentralized sub type.
   subject_identifier_types_supported: ('jkt' | DIDMethodPrefix)[];

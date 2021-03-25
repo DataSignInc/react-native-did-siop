@@ -139,7 +139,7 @@ export const RegistrationSchema = {
     "subject_types_supported": {
       "items": {
         "enum": [
-          "pairwase",
+          "pairwise",
           "public"
         ],
         "type": "string"
