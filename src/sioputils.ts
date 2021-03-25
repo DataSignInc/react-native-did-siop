@@ -135,8 +135,8 @@ export class SIOPValidator {
 
     this.validateClientId(params, requestObject, registration);
 
-    this.validateIss(request.iss, registration);
-    this.validateKid(request.kid, registration, jwks);
+    this.validateIss(requestObject.iss, registration);
+    this.validateKid(requestObject.kid, registration, jwks);
   }
 
   validateClientId(
@@ -242,7 +242,6 @@ const getRequestObject = async (params: any) => {
 };
 
 const getRegistration = async (request: any) => {
-  console.log(JSON.stringify(request, null, 2));
   const registrationWithoutType: any = await resolveUriParameter(
     request.registration,
     request.registration_uri,
@@ -258,6 +257,9 @@ const getRegistration = async (request: any) => {
 };
 
 const getJwks = async (registration: Registration) => {
+  if (!registration.jwks && !registration.jwks_uri) {
+    return null;
+  }
   return await resolveUriParameter(registration.jwks, registration.jwks_uri);
 };
 

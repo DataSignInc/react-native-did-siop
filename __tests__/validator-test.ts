@@ -56,8 +56,8 @@ describe('request validation', () => {
         id_token_signing_alg_values_supported: ['ES256K', 'EdDSA', 'RS256'],
         request_object_signing_alg_values_supported: ['ES256', 'ES256K'],
         redirect_uris: ['http://192.168.0.6:5001/home'],
-        jwks_uri:
-          'https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks',
+        // jwks_uri:
+        //   'https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks',
         did: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6',
       } as Registration,
       kid: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller',
