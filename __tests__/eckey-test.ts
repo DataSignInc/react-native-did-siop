@@ -3,12 +3,10 @@ import {ECKeyPair} from '../src/keys/ec';
 
 // Create and initialize EC context
 // (better do it once and reuse it)
-var ec = new EC('secp256k1');
+const ec = new EC('secp256k1');
 
 // Generate keys
-var key = ec.genKeyPair();
-
-const privateKey = key.getPrivate();
+const key = ec.genKeyPair();
 
 describe('key/ec', () => {
   const keyPair = new ECKeyPair(key);
