@@ -15,7 +15,7 @@ export class ECKeyPair {
 
   async sign(payload: any, did: string) {
     const privateKey = this.keyPair.getPrivate();
-    const signer = await ES256KSigner(privateKey.toString('hex'));
+    const signer = ES256KSigner(privateKey.toString('hex'));
     return await createJWS(payload, signer, {
       alg: 'ES256K',
       typ: 'JWT',
