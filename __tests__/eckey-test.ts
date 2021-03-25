@@ -11,10 +11,10 @@ describe('key/ec', () => {
 
   test('sign', async () => {
     const expected =
-      'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJ0ZXN0I2NvbnRyb2xsZXIifQ.eyJzYW1wbGUiOiJkYXRhIn0.yDpf0X9WBvhBohQi-7mkMv7FdfzL1NQt4WuGTLUurr9hvBEZ8-AirHbFhafhtoAT9CGdlRum12zAlwGGoPSXIg';
-    await expect(keyPair.sign({sample: 'data'}, 'test')).resolves.toBe(
-      expected,
-    );
+      'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIn0.eyJzYW1wbGUiOiJkYXRhIn0.52KfBvotjTPvbZl0Ez_pL__X_9Dqkv_zbn0lBGhnlQZQ_JGQcYbpQhSG_T0g07-NXrLd6lMld8hp2-n1HtKP3A';
+    await expect(
+      keyPair.sign({sample: 'data'}, 'did:example:ab'),
+    ).resolves.toBe(expected);
   });
 
   test('getJWK', () => {
