@@ -6,24 +6,15 @@ import {Registration, Request, RequestObject} from './siop-schema';
 import {getRegistration, getJwks, getRequestObject} from './sioputils';
 export default class SIOPValidator {
   async validateSIOPRequest(request: any) {
-    const jwt: string = request.request;
-    let decoded;
-    try {
-      await verifyJWT(jwt);
-      decoded = didJWT.decodeJWT(jwt);
-      debug('============ RequestObject ===============', decoded);
-      // const key = new Key(decoded.header);
-    } catch (error) {
-      console.error('JWT verification failed');
-      throw new SIOPRequestValidationError('invalid_request', error);
-    }
+    const decoded = await this.validateSignature(request.request);
+    debug('============ RequestObject ===============', decoded);
 
     // validate paramters
     const requestObject = decoded.payload;
     this.validateOIDCParameters(request, requestObject);
     const registration = await getRegistration(requestObject);
     this.validateDIDAuthnParameters(
-      requestObject,
+      requestObject as RequestObject,
       registration,
       decoded.header,
     );
@@ -32,6 +23,16 @@ export default class SIOPValidator {
       request: request as Request,
       requestObject: requestObject as RequestObject,
     };
+  }
+
+  async validateSignature(jwt: string) {
+    try {
+      await verifyJWT(jwt);
+      return didJWT.decodeJWT(jwt);
+    } catch (error) {
+      console.error('JWT verification failed', error);
+      throw new SIOPRequestValidationError('invalid_request', error);
+    }
   }
 
   validateDIDAuthnParameters(
