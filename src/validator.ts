@@ -1,5 +1,5 @@
 import didJWT, {JWTHeader} from 'did-jwt';
-import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
+import {SIOPRequestValidationError} from './error';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
 import {Registration, Request, RequestObject} from './siop-schema';
