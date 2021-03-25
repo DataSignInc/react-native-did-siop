@@ -4,6 +4,23 @@ import React from 'react';
 import {Registration} from '../src/siop-schema';
 import {SIOPValidator} from '../src/sioputils';
 
+const did1 = 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6';
+const registration1: Registration = {
+  authorization_endpoint: 'openid:',
+  issuer: 'https://self-issued.me/v2',
+  response_types_supported: ['id_token'],
+  credential_formats_supported: ['jwt_vc'],
+  scopes_supported: ['openid', 'profile', 'email', 'address', 'phone'],
+  subject_types_supported: ['pairwase'],
+  subject_identifier_types_supported: ['did:web:', 'did:ion:'],
+  id_token_signing_alg_values_supported: ['ES256K', 'EdDSA', 'RS256'],
+  request_object_signing_alg_values_supported: ['ES256', 'ES256K'],
+  redirect_uris: ['http://192.168.0.6:5001/home'],
+  // jwks_uri:
+  //   'https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks',
+  did: did1,
+};
+
 describe('request validation', () => {
   const validator = new SIOPValidator();
   test('iss', () => {
@@ -21,7 +38,7 @@ describe('request validation', () => {
   });
 
   test('request.iss == registration.did', () => {
-    validator.validateIss('did:example:12', {did: 'did:example:12'});
+    validator.validateIss(did1, registration1);
   });
 
   test.each([['did:example:123']])('invalid iss', (iss) => {
@@ -44,22 +61,7 @@ describe('request validation', () => {
       response_type: 'id_token',
       scope: 'openid did_authn',
       client_id: 'http://192.168.0.6:5001/home',
-      registration: {
-        authorization_endpoint: 'openid:',
-        issuer: 'https://self-issued.me/v2',
-        response_types_supported: ['id_token'],
-        credential_formats_supported: ['jwt_vc'],
-
-        scopes_supported: ['openid', 'profile', 'email', 'address', 'phone'],
-        subject_types_supported: ['pairwase'],
-        subject_identifier_types_supported: ['did:web:', 'did:ion:'],
-        id_token_signing_alg_values_supported: ['ES256K', 'EdDSA', 'RS256'],
-        request_object_signing_alg_values_supported: ['ES256', 'ES256K'],
-        redirect_uris: ['http://192.168.0.6:5001/home'],
-        // jwks_uri:
-        //   'https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks',
-        did: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6',
-      } as Registration,
+      registration: registration1,
       kid: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller',
       redirect_uri: 'http://192.168.0.6:5001/home',
     };

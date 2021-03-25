@@ -20,52 +20,25 @@ export const RegistrationSchema = {
       "type": "string"
     },
     "credential_formats_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "enum": [
-              "jwt",
-              "jwt_vc",
-              "jwt_vp",
-              "ldp_vc",
-              "ldp_vp"
-            ],
-            "type": "string"
-          }
-        ]
+      "items": {
+        "enum": [
+          "jwt",
+          "jwt_vc",
+          "jwt_vp",
+          "ldp_vc",
+          "ldp_vp"
+        ],
+        "type": "string"
       },
-      "items": [
-        {
-          "enum": [
-            "jwt",
-            "jwt_vc",
-            "jwt_vp",
-            "ldp_vc",
-            "ldp_vp"
-          ],
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "did": {
       "type": "string"
     },
     "did_methods_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "type": "string"
-          }
-        ]
+      "items": {
+        "type": "string"
       },
-      "items": [
-        {
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "id_token_encrypted_response_alg": {
@@ -75,31 +48,15 @@ export const RegistrationSchema = {
       "type": "string"
     },
     "id_token_signing_alg_values_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "enum": [
-              "ES256",
-              "ES256K",
-              "EdDSA",
-              "RS256"
-            ],
-            "type": "string"
-          }
-        ]
+      "items": {
+        "enum": [
+          "ES256",
+          "ES256K",
+          "EdDSA",
+          "RS256"
+        ],
+        "type": "string"
       },
-      "items": [
-        {
-          "enum": [
-            "ES256",
-            "ES256K",
-            "EdDSA",
-            "RS256"
-          ],
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "issuer": {
@@ -120,49 +77,22 @@ export const RegistrationSchema = {
       "type": "string"
     },
     "redirect_uris": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "type": "string"
-          }
-        ]
+      "items": {
+        "type": "string"
       },
-      "items": [
-        {
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "request_object_signing_alg_values_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "enum": [
-              "ES256",
-              "ES256K",
-              "EdDSA",
-              "RS256",
-              "none"
-            ],
-            "type": "string"
-          }
-        ]
+      "items": {
+        "enum": [
+          "ES256",
+          "ES256K",
+          "EdDSA",
+          "RS256",
+          "none"
+        ],
+        "type": "string"
       },
-      "items": [
-        {
-          "enum": [
-            "ES256",
-            "ES256K",
-            "EdDSA",
-            "RS256",
-            "none"
-          ],
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "response_types_supported": {
@@ -188,73 +118,32 @@ export const RegistrationSchema = {
       "type": "array"
     },
     "scopes_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "enum": [
-              "address",
-              "email",
-              "openid",
-              "phone",
-              "profile"
-            ],
-            "type": "string"
-          }
-        ]
+      "items": {
+        "enum": [
+          "address",
+          "email",
+          "openid",
+          "phone",
+          "profile"
+        ],
+        "type": "string"
       },
-      "items": [
-        {
-          "enum": [
-            "address",
-            "email",
-            "openid",
-            "phone",
-            "profile"
-          ],
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "subject_identifier_types_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "type": "string"
-          }
-        ]
+      "items": {
+        "type": "string"
       },
-      "items": [
-        {
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "subject_types_supported": {
-      "additionalItems": {
-        "anyOf": [
-          {
-            "enum": [
-              "pairwase",
-              "public"
-            ],
-            "type": "string"
-          }
-        ]
+      "items": {
+        "enum": [
+          "pairwase",
+          "public"
+        ],
+        "type": "string"
       },
-      "items": [
-        {
-          "enum": [
-            "pairwase",
-            "public"
-          ],
-          "type": "string"
-        }
-      ],
-      "minItems": 1,
       "type": "array"
     },
     "tos_uri": {
