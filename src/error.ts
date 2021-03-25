@@ -8,6 +8,15 @@ export class SIOPError extends Error {
   }
 }
 
-export class SIOPRequestValidationError extends SIOPError {}
+export class SIOPRequestValidationError extends SIOPError {
+  public invalidField?: string;
+  public invalidValue?: any;
+
+  constructor(error: ErrorCode, invalidField?: string, invalidValue?: any) {
+    super(error);
+    this.invalidField = invalidField;
+    this.invalidValue = invalidValue;
+  }
+}
 
 export class SIOPResponseGenerationError extends SIOPError {}

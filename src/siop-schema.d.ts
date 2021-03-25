@@ -30,7 +30,7 @@ export interface Registration {
   tos_uri?: string;
   logo_uri?: string;
   // if RP uses more than one redirection URIs
-  redirect_uris?: string;
+  redirect_uris?: [string];
 
   // The 3 params below are typically used if the RP is requesting encrypted responses.
   // JSON Web Key Set (JWKS)

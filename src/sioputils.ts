@@ -23,7 +23,7 @@ export class SIOPValidator {
     // validate paramters
     const requestObject = decoded.payload;
     this.validateOIDCParameters(request, requestObject);
-    const registration = await getRegistration(request);
+    const registration = await getRegistration(requestObject);
     this.validateDIDAuthnParameters(
       requestObject,
       registration,
@@ -128,11 +128,12 @@ export class SIOPValidator {
     this.validateScope(params.scope);
     this.validateResponseType(params.response_type);
 
+    // TODO: this request is not decoded if it's from the request_uri parameter.
     const request = await getRequestObject(params);
-    const registration = await getRegistration(request);
+    const registration = await getRegistration(requestObject);
     const jwks = await getJwks(registration);
 
-    this.validateClientId(params, request, registration);
+    this.validateClientId(params, requestObject, registration);
 
     this.validateIss(request.iss, registration);
     this.validateKid(request.kid, registration, jwks);
@@ -210,6 +211,7 @@ const resolveUriParameter = async (
   errorCodeOnInvalidUri: ErrorCode = 'invalid_request',
 ) => {
   if (!something && !something_uri) {
+    console.error(errorCodeOnInvalidUri);
     throw new SIOPRequestValidationError('invalid_request');
   }
   if (something) {
@@ -222,7 +224,11 @@ const resolveUriParameter = async (
         return jsonData;
       }
     } catch (error) {
-      throw new SIOPRequestValidationError(errorCodeOnInvalidUri);
+      throw new SIOPRequestValidationError(
+        errorCodeOnInvalidUri,
+        'something',
+        something_uri,
+      );
     }
   }
 };
@@ -236,6 +242,7 @@ const getRequestObject = async (params: any) => {
 };
 
 const getRegistration = async (request: any) => {
+  console.log(JSON.stringify(request, null, 2));
   const registrationWithoutType: any = await resolveUriParameter(
     request.registration,
     request.registration_uri,
@@ -244,7 +251,9 @@ const getRegistration = async (request: any) => {
   try {
     return validateRegistraion(registrationWithoutType);
   } catch (error) {
-    throw new SIOPRequestValidationError('invalid_registration_object');
+    console.error(error);
+    console.error(JSON.stringify(registrationWithoutType, null, 2));
+    throw new SIOPRequestValidationError('invalid_registration_object', error);
   }
 };
 
