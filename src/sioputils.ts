@@ -2,6 +2,8 @@ import {SIOPRequestValidationError} from './error';
 import {ErrorCode, Registration} from './siop-schema';
 import validateRegistraion from './siop-schema.d.validator';
 
+export const getIssuedAt = () => Math.floor(Date.now() / 1000);
+
 const resolveUriParameter = async (
   something?: any,
   something_uri?: string,

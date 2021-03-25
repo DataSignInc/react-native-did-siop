@@ -3,6 +3,7 @@ import SIOPValidator from './validator';
 import {Request, RequestObject, IDToken} from './siop-schema';
 import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';
+import {getIssuedAt} from './sioputils';
 
 export class Provider {
   private expiresIn: number;
@@ -37,8 +38,8 @@ export class Provider {
     return persona.unlockKeyPair();
   }
 
-  private async generateIDToken(request: RequestObject, persona: Persona) {
-    const issuedAt = Math.floor(Date.now() / 1000);
+  public async generateIDToken(request: RequestObject, persona: Persona) {
+    const issuedAt = getIssuedAt();
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
       sub: persona.getSubjectIdentier(),
