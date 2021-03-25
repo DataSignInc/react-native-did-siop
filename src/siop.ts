@@ -1,5 +1,5 @@
 import {debug} from './log';
-import {SIOPValidator} from './sioputils';
+import SIOPValidator from './validator';
 import {Request, RequestObject, IDToken} from './siop-schema';
 import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';

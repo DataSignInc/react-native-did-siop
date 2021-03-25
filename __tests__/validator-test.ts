@@ -2,7 +2,7 @@ import 'react-native';
 import React from 'react';
 
 import {Registration} from '../src/siop-schema';
-import {SIOPValidator} from '../src/sioputils';
+import SIOPValidator from '../src/validator';
 
 const did1 = 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6';
 const registration1: Registration = {
