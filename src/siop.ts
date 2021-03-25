@@ -18,17 +18,12 @@ export class Provider {
   }
 
   async receiveRequestParameters(params: any) {
-    try {
-      const validator = new SIOPValidator();
-      const {request, requestObject} = await validator.validateSIOPRequest(
-        params,
-      );
-      this.requestObject = requestObject;
-      return requestObject.client_id;
-    } catch (error) {
-      console.error(error);
-      throw new SIOPRequestValidationError(error);
-    }
+    const validator = new SIOPValidator();
+    const {request, requestObject} = await validator.validateSIOPRequest(
+      params,
+    );
+    this.requestObject = requestObject;
+    return requestObject.client_id;
   }
 
   async authenticatePersona(persona: Persona) {

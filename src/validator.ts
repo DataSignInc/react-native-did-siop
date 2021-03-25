@@ -85,7 +85,7 @@ export default class SIOPValidator {
     }
   }
 
-  async validateOIDCParameters(params: Request, requestObject: any) {
+  async validateOIDCParameters(params: any, requestObject: any) {
     /*
       Procedure:
 

@@ -6,6 +6,10 @@ export class SIOPError extends Error {
     super(error);
     this.error = error;
   }
+
+  toResponse() {
+    return {error: this.error};
+  }
 }
 
 export class SIOPRequestValidationError extends SIOPError {

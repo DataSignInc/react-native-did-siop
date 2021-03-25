@@ -5,6 +5,8 @@ const ec = new EC('secp256k1');
 import {Registration} from '../src/siop-schema';
 import {JWTHeader} from 'did-jwt';
 
+export const didUser =
+  'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:user';
 export const privateKeyHex =
   '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
 export const sekp256k1Key = ec.keyFromPrivate(privateKeyHex);
