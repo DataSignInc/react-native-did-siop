@@ -74,6 +74,7 @@ export default class SIOPValidator {
       return;
     } else {
       // TODO: JWS signature verification with the key of request.kid
+      throw new SIOPRequestValidationError('invalid_request');
     }
   }
 

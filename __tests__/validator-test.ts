@@ -3,6 +3,8 @@ import React from 'react';
 
 import {Registration} from '../src/siop-schema';
 import SIOPValidator from '../src/validator';
+import {JWTHeader} from 'did-jwt';
+import {SIOPRequestValidationError} from '../src/error';
 
 const did1 = 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6';
 const registration1: Registration = {
@@ -40,6 +42,13 @@ describe('request validation', () => {
     kid: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller',
     redirect_uri: 'http://192.168.0.6:5001/home',
   };
+
+  const jwtHeader: JWTHeader = {
+    kid: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller',
+    typ: 'JWT',
+    alg: 'ES256K',
+  };
+
   test('iss', () => {
     validator.validateIss('test');
   });
@@ -73,6 +82,26 @@ describe('request validation', () => {
 
   test('client_id', () => {
     expect(validator.validateClientId(request, requestObject)).toBeUndefined();
+  });
+
+  test('did authn', () => {
+    validator.validateDIDAuthnParameters(
+      requestObject,
+      registration1,
+      jwtHeader,
+    );
+  });
+
+  test('did authn error due to invalid kid', () => {
+    const jwtHeaderWithInvalidKid = {...jwtHeader, kid: 'invalid'};
+
+    expect(() =>
+      validator.validateDIDAuthnParameters(
+        requestObject,
+        registration1,
+        jwtHeaderWithInvalidKid,
+      ),
+    ).toThrow(new SIOPRequestValidationError('invalid_request'));
   });
 
   //   test('validate OAuth 2 Parameters', async () => {
