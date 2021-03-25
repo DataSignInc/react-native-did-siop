@@ -65,6 +65,9 @@
       "json",
       "node"
     ],
+    "coveragePathIgnorePatterns": [
+      ".*\\.d\\.validator\\.ts"
+    ],
     "verbose": false
   }
 }
