@@ -75,9 +75,9 @@ describe('request validation', () => {
   });
 
   test('validate OIDC Parameters', async () => {
-    expect(
-      await validator.validateOIDCParameters(request, requestObject),
-    ).toBeUndefined();
+    await expect(
+      validator.validateOIDCParameters(request, requestObject),
+    ).resolves.toBeUndefined();
   });
 
   test('client_id', () => {
@@ -104,6 +104,11 @@ describe('request validation', () => {
     ).toThrow(new SIOPRequestValidationError('invalid_request'));
   });
 
+  test('e2e', async () => {
+    await expect(validator.validateSIOPRequest(request)).rejects.toBeInstanceOf(
+      SIOPRequestValidationError,
+    );
+  });
   //   test('validate OAuth 2 Parameters', async () => {
   //     const request = {
   //       client_id: 'http://192.168.0.6:5001/home',

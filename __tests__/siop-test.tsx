@@ -10,8 +10,4 @@ describe('siop', () => {
   test('sample', () => {
     provider;
   });
-
-  // test.each([['did:example:12#ab']])('valid kid', (kid) => {
-  //   provider.validateKid(kid, {jwks: {}});
-  // });
 });

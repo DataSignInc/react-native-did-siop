@@ -1,5 +1,5 @@
 import didJWT, {JWTHeader} from 'did-jwt';
-import {SIOPRequestValidationError} from './error';
+import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
 import {Registration, Request, RequestObject} from './siop-schema';
@@ -15,7 +15,7 @@ export default class SIOPValidator {
       // const key = new Key(decoded.header);
     } catch (error) {
       console.error('JWT verification failed');
-      throw error;
+      throw new SIOPRequestValidationError('invalid_request', error);
     }
 
     // validate paramters
