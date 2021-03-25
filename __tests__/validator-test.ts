@@ -45,6 +45,12 @@ describe('request validation', () => {
     ).toBeUndefined();
   });
 
+  test('response_type', () => {
+    expect(() => validator.validateResponseType('invalid')).toThrow(
+      new SIOPRequestValidationError('unsupported_response_type'),
+    );
+  });
+
   test('did authn', () => {
     validator.validateDIDAuthnParameters(
       consts.requestObject,
