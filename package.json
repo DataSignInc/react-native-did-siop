@@ -65,6 +65,11 @@
       "json",
       "node"
     ],
+    "testPathIgnorePatterns": [
+      "./__tests__/consts.ts",
+      "./node_modules",
+      "./dist"
+    ],
     "coveragePathIgnorePatterns": [
       ".*\\.d\\.validator\\.ts"
     ],
