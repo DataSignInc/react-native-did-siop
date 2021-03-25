@@ -19,12 +19,19 @@ describe('persona', () => {
   });
 
   test('getMinimalJWK', async () => {
+    const expected = {
+      kty: 'EC',
+      crv: 'K-256',
+      x: 'rT61nvuz2LCRzx4W1EfEwGAiVgCuN6aKTW-PZ46qD1E',
+      y: 'ABGl1Pr6v7nVwvaa1g14m5M7oGgqs23Fpf780x-VJpM',
+    };
     await persona.unlockKeyPair();
-    persona.getMinimalJWK();
+    expect(persona.getMinimalJWK()).toStrictEqual(expected);
   });
 
-  test('getSubjectIdnetier()', async () => {
+  test('getSubjectIdentier()', async () => {
+    const expected = 'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4';
     await persona.unlockKeyPair();
-    persona.getSubjectIdentier();
+    expect(persona.getSubjectIdentier()).toBe(expected);
   });
 });
