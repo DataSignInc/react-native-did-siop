@@ -1,6 +1,13 @@
+import {ec as EC} from 'elliptic';
+
+const ec = new EC('secp256k1');
+
 import {Registration} from '../src/siop-schema';
 import {JWTHeader} from 'did-jwt';
 
+export const privateKeyHex =
+  '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
+export const sekp256k1Key = ec.keyFromPrivate(privateKeyHex);
 export const client_id = 'http://192.168.0.5:5001/home';
 export const didRP =
   'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp';
