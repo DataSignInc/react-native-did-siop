@@ -39,6 +39,7 @@
 
 * JWE is not supported.
 * Currently the ec keys with the `secp256k1` curve is the only supported key type for users. RP can use other types of keys.
+* You cannot select the DID methods to use. `did:web:` and `did:ethr:` is the only choises.
 * You need to choose personas only with the `client_id` of RP. Other parameters sent from RP are not exposed to outside of the library.
 * Some parameter validations are omitted.
     - validating whether `jwks` in `registration` parameter contains `iss` in request objects.
