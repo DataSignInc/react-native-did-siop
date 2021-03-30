@@ -66,9 +66,7 @@
     "testPathIgnorePatterns": [
       "./__tests__/consts.ts",
       "./node_modules",
-      "./dist"
-    ],
-    "coveragePathIgnorePatterns": [
+      "./dist",
       ".*\\.d\\.validator\\.ts"
     ],
     "verbose": false
