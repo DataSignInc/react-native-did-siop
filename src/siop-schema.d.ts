@@ -12,25 +12,29 @@ export interface Registration {
   issuer: 'https://self-issued.me/v2';
   response_types_supported: ['id_token'];
 
-  scopes_supported: ['openid' | 'profile' | 'email' | 'address' | 'phone'];
-  subject_types_supported: ['pairwase' | 'public'];
+  scopes_supported: ('openid' | 'profile' | 'email' | 'address' | 'phone')[];
+  subject_types_supported: ('pairwise' | 'public')[];
   // jkt: JWK Thumbprint Subject sub type. [RFC7638]
   // DIDMethodPrefix: did Decentralized sub type.
-  subject_identifier_types_supported: ['jkt' | DIDMethodPrefix];
+  subject_identifier_types_supported: ('jkt' | DIDMethodPrefix)[];
   // RP can indicate that it doesn't support a did method included
   // in the subject_identiier_types_supported field by omitting it from
   // did_methods_supported.
-  did_methods_supported?: [DIDMethodPrefix];
-  credential_formats_supported: [
-    'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp_vc' | 'ldp_vp',
-  ];
-  id_token_signing_alg_values_supported: [SigningAlgorithm];
-  request_object_signing_alg_values_supported: ['none' | SigningAlgorithm];
+  did_methods_supported?: DIDMethodPrefix[];
+  credential_formats_supported: (
+    | 'jwt'
+    | 'jwt_vc'
+    | 'jwt_vp'
+    | 'ldp_vc'
+    | 'ldp_vp'
+  )[];
+  id_token_signing_alg_values_supported: SigningAlgorithm[];
+  request_object_signing_alg_values_supported: ('none' | SigningAlgorithm)[];
   policy_uri?: string;
   tos_uri?: string;
   logo_uri?: string;
   // if RP uses more than one redirection URIs
-  redirect_uris?: string;
+  redirect_uris?: string[];
 
   // The 3 params below are typically used if the RP is requesting encrypted responses.
   // JSON Web Key Set (JWKS)

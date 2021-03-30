@@ -6,8 +6,21 @@ export class SIOPError extends Error {
     super(error);
     this.error = error;
   }
+
+  toResponse() {
+    return {error: this.error};
+  }
 }
 
-export class SIOPRequestValidationError extends SIOPError {}
+export class SIOPRequestValidationError extends SIOPError {
+  public invalidField?: string;
+  public invalidValue?: any;
+
+  constructor(error: ErrorCode, invalidField?: string, invalidValue?: any) {
+    super(error);
+    this.invalidField = invalidField;
+    this.invalidValue = invalidValue;
+  }
+}
 
 export class SIOPResponseGenerationError extends SIOPError {}

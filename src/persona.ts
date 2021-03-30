@@ -31,7 +31,7 @@ class Persona {
   }
 
   async sign(payload: any) {
-    return this.keyPair.sign(payload);
+    return this.keyPair.sign(payload, this.did);
   }
 }
 
