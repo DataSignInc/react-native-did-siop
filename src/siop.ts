@@ -4,17 +4,14 @@ import {Request, RequestObject, IDToken} from './siop-schema';
 import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
 import Persona from './persona';
 import {getIssuedAt} from './sioputils';
+import {ECKeyPair} from './keys/ec';
+import {ec as EC} from 'elliptic';
 
 export class Provider {
   private expiresIn: number;
   private requestObject: any;
-  public choosePersona: () => Promise<Persona>; // rp => (did, keypairid)
-  constructor(choosePersona: any, authenticatePersona: any) {
-    this.choosePersona = async () => {
-      const [did, keyPairID] = await choosePersona();
-      return new Persona(did, keyPairID, authenticatePersona);
-    };
-    this.expiresIn = 3600;
+  constructor(expiresIn: number) {
+    this.expiresIn = expiresIn;
   }
 
   async receiveRequestParameters(params: any) {
@@ -25,14 +22,6 @@ export class Provider {
     this.requestObject = requestObject;
     return requestObject.client_id;
   }
-
-  async authenticatePersona(persona: Persona) {
-    if (!persona) {
-      throw Error('persona is not choosed or not found');
-    }
-    return persona.unlockKeyPair();
-  }
-
   public async generateIDToken(request: RequestObject, persona: Persona) {
     const issuedAt = getIssuedAt();
     const idToken: IDToken = {
@@ -52,8 +41,9 @@ export class Provider {
     return jws;
   }
 
-  async generateResponse(persona: Persona) {
+  async generateResponse(did: string, keyPair: EC.KeyPair) {
     try {
+      const persona = new Persona(did, new ECKeyPair(keyPair));
       const request: RequestObject = this.requestObject;
       const idToken = await this.generateIDToken(request, persona);
       // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.

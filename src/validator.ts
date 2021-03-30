@@ -7,7 +7,6 @@ import {getRegistration, getJwks, getRequestObject} from './sioputils';
 export default class SIOPValidator {
   async validateSIOPRequest(request: any) {
     const decoded = await this.validateSignature(request.request);
-    debug('============ RequestObject ===============', decoded);
 
     // validate paramters
     const requestObject = decoded.payload;
@@ -30,8 +29,9 @@ export default class SIOPValidator {
       await verifyJWT(jwt);
       return didJWT.decodeJWT(jwt);
     } catch (error) {
-      console.error('JWT verification failed', error);
-      throw new SIOPRequestValidationError('invalid_request', error);
+      console.error('JWT verification failed');
+      console.error(error);
+      throw new SIOPRequestValidationError('invalid_request', 'jwt signature');
     }
   }
 
@@ -54,7 +54,11 @@ export default class SIOPValidator {
     // verify siop request according to the verification method above
 
     if (!request.scope.includes('did_authn')) {
-      throw new SIOPRequestValidationError('invalid_scope');
+      throw new SIOPRequestValidationError(
+        'invalid_scope',
+        'scope',
+        request.scope,
+      );
     }
 
     // const resolver = getResolver();
@@ -81,7 +85,11 @@ export default class SIOPValidator {
         'jwtHeader.kid ===',
         jwtHeader.kid,
       );
-      throw new SIOPRequestValidationError('invalid_request');
+      throw new SIOPRequestValidationError(
+        'invalid_request',
+        'kid',
+        request.kid,
+      );
     }
   }
 
@@ -121,14 +129,14 @@ export default class SIOPValidator {
       // this SIOP request asks me not to authentication but to just register RP meta data.
       // In this case params MUST contain registration or registration_uri params.
       if (!params.registration && !params.registration_uri) {
-        throw new SIOPRequestValidationError('invalid_request');
+        throw new SIOPRequestValidationError('invalid_request', 'registration');
       } else {
         // TODO: implement registration only flow.
         throw new SIOPRequestValidationError('registration_not_supported');
       }
     }
     if (!containsAllRequiredParameters) {
-      throw new SIOPRequestValidationError('invalid_request');
+      throw new SIOPRequestValidationError('invalid_request', 'requiredFields');
     }
 
     this.validateScope(params.scope);
@@ -151,37 +159,65 @@ export default class SIOPValidator {
     registration?: Registration,
   ) {
     if (!request.client_id || !requestObject.client_id) {
-      throw new SIOPRequestValidationError('invalid_request_object');
+      throw new SIOPRequestValidationError(
+        'invalid_request_object',
+        'client_id',
+        null,
+      );
     }
     if (request.client_id !== requestObject.client_id) {
-      throw new SIOPRequestValidationError('invalid_request_object');
+      throw new SIOPRequestValidationError(
+        'invalid_request_object',
+        'client_id',
+        requestObject.client_id,
+      );
     }
     const client_id = requestObject.client_id;
     if (registration && registration.redirect_uris) {
       if (registration.redirect_uris.includes(client_id)) {
         return; // valid!
       } else {
-        throw new SIOPRequestValidationError('invalid_request_object');
+        throw new SIOPRequestValidationError(
+          'invalid_request_object',
+          'client_id',
+          client_id,
+        );
       }
     }
   }
 
   validateResponseType(response_type: string) {
     if (!response_type) {
-      throw new SIOPRequestValidationError('invalid_request');
+      throw new SIOPRequestValidationError(
+        'invalid_request',
+        'response_type',
+        response_type,
+      );
     }
     if (response_type !== 'id_token') {
-      throw new SIOPRequestValidationError('unsupported_response_type');
+      throw new SIOPRequestValidationError(
+        'unsupported_response_type',
+        undefined,
+        response_type,
+      );
     }
   }
 
   validateIss(iss?: string, registration?: Registration) {
     if (!iss) {
-      throw new SIOPRequestValidationError('invalid_request_object');
+      throw new SIOPRequestValidationError(
+        'invalid_request_object',
+        'iss',
+        null,
+      );
     }
     if (registration && registration.did) {
       if (iss !== registration.did) {
-        throw new SIOPRequestValidationError('invalid_request_object');
+        throw new SIOPRequestValidationError(
+          'invalid_request_object',
+          'iss',
+          iss,
+        );
       } else {
         return; // valid
       }
@@ -190,13 +226,13 @@ export default class SIOPValidator {
 
   validateScope(scope?: string) {
     if (!scope) {
-      throw new SIOPRequestValidationError('invalid_scope');
+      throw new SIOPRequestValidationError('invalid_scope', 'scope', scope);
     }
     const scopeArray = scope.split(' ');
     const isScopeValid =
       scopeArray.includes('openid') && scopeArray.includes('did_authn');
     if (!isScopeValid) {
-      throw new SIOPRequestValidationError('invalid_scope');
+      throw new SIOPRequestValidationError('invalid_scope', 'scope', scope);
     }
   }
 
