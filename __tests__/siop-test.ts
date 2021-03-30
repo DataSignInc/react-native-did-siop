@@ -27,9 +27,9 @@ describe('siop', () => {
   test('receiveRequestParamaters() raises no errors', async () => {
     const provider = new Provider(expiresIn);
 
-    await expect(
-      provider.receiveRequestParameters(consts.request),
-    ).resolves.toBe(consts.client_id);
+    await expect(provider.receiveRequest(consts.request)).resolves.toBe(
+      consts.client_id,
+    );
   });
 
   test('receiveRequestParamaters() raises errors on validation failure', async () => {
@@ -37,9 +37,7 @@ describe('siop', () => {
     invalidRequest.response_type = 'invalid';
     const provider = new Provider(expiresIn);
 
-    await expect(
-      provider.receiveRequestParameters(invalidRequest),
-    ).rejects.toStrictEqual(
+    await expect(provider.receiveRequest(invalidRequest)).rejects.toStrictEqual(
       new SIOPRequestValidationError('unsupported_response_type'),
     );
   });
@@ -59,7 +57,7 @@ describe('siop', () => {
 
     // @ts-expect-error 2322
     utils.getIssuedAt.mockReturnValueOnce(1616669045);
-    await provider.receiveRequestParameters(consts.request);
+    await provider.receiveRequest(consts.request);
 
     await expect(
       provider.generateResponse(did, consts.sekp256k1Key),

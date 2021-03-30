@@ -14,7 +14,8 @@ export class Provider {
     this.expiresIn = expiresIn;
   }
 
-  async receiveRequestParameters(params: any) {
+  async receiveRequest(paramsOrUrl: any) {
+    let params = paramsOrUrl instanceof String ? null : paramsOrUrl;
     const validator = new SIOPValidator();
     const {request, requestObject} = await validator.validateSIOPRequest(
       params,
@@ -55,19 +56,5 @@ export class Provider {
     } catch (error) {
       throw new SIOPResponseGenerationError(error);
     }
-  }
-
-  async receiveRequest(url: string) {
-    throw 'Not Implemented';
-    // const parser = new URLParser(url);
-    // const {params, request} = await parser.parse();
-    // const key = new Key(request.header);
-    // const validator = new RequestValidator(key);
-    // validator.validate(params, request.payload);
-
-    // return {
-    //   params: params as Request,
-    //   request: request.payload as RequestObject,
-    // };
   }
 }
