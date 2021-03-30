@@ -11,7 +11,8 @@
         try {
           const idTokenExpiresIn = 3600;
           const provider = new Provider(idTokenExpiresIn);
-          const clientId = await provider.receiveRequestParameters(route.params);  // route.params is parsed by react-navigation
+          // route.params is parsed by react-navigation.
+          const clientId = await provider.receiveRequest(route.params);
 
           // you can choose your personas based on the clientId returned above.
           let location = await provider.generateResponse(
