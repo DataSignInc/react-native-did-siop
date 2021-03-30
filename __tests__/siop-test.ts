@@ -17,12 +17,15 @@ describe('siop', () => {
 
   const persona = new Persona(
     'did:example:ab',
-    'key-id',
-    async () => new ECKeyPair(consts.sekp256k1Key),
+    new ECKeyPair(consts.sekp256k1Key),
   );
 
+  const did = 'did:example:ab';
+
+  const expiresIn = 3600;
+
   test('receiveRequestParamaters() raises no errors', async () => {
-    const provider = new Provider(consts.didUser, privateKeyHex);
+    const provider = new Provider(expiresIn);
 
     await expect(
       provider.receiveRequestParameters(consts.request),
@@ -32,7 +35,7 @@ describe('siop', () => {
   test('receiveRequestParamaters() raises errors on validation failure', async () => {
     const invalidRequest = {...consts.request};
     invalidRequest.response_type = 'invalid';
-    const provider = new Provider(consts.didUser, privateKeyHex);
+    const provider = new Provider(expiresIn);
 
     await expect(
       provider.receiveRequestParameters(invalidRequest),
@@ -42,25 +45,25 @@ describe('siop', () => {
   });
 
   test('generate ID Token', async () => {
-    const provider = new Provider(consts.didUser, privateKeyHex);
+    const provider = new Provider(expiresIn);
 
     // @ts-expect-error 2322
     utils.getIssuedAt.mockReturnValueOnce(1616669045);
-    await persona.unlockKeyPair();
     await expect(
       provider.generateIDToken(consts.requestObject, persona),
     ).resolves.toBe(expectedIDToken);
   });
 
   test('generate response', async () => {
-    const provider = new Provider(consts.didUser, privateKeyHex);
+    const provider = new Provider(expiresIn);
 
     // @ts-expect-error 2322
     utils.getIssuedAt.mockReturnValueOnce(1616669045);
     await provider.receiveRequestParameters(consts.request);
-    await persona.unlockKeyPair();
 
-    await expect(provider.generateResponse(persona)).resolves.toMatch(
+    await expect(
+      provider.generateResponse(did, consts.sekp256k1Key),
+    ).resolves.toMatch(
       `http://192.168.0.5:5001/home#id_token=${expectedIDToken}`,
     );
   });
