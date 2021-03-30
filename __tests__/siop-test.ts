@@ -5,6 +5,7 @@ import {Provider} from '../src/siop';
 import * as consts from './consts';
 
 import * as utils from '../src/sioputils';
+import {SIOPRequestValidationError} from '../src/error';
 jest.mock('../src/sioputils');
 
 describe('siop', () => {
@@ -31,13 +32,13 @@ describe('siop', () => {
   test('receiveRequestParamaters() raises errors on validation failure', async () => {
     const invalidRequest = {...consts.request};
     invalidRequest.response_type = 'invalid';
-    console.error(invalidRequest);
-    // expect(0).toBe(1);
     const provider = new Provider(consts.didUser, privateKeyHex);
 
     await expect(
       provider.receiveRequestParameters(invalidRequest),
-    ).resolves.toBe(consts.client_id);
+    ).rejects.toStrictEqual(
+      new SIOPRequestValidationError('unsupported_response_type'),
+    );
   });
 
   test('generate ID Token', async () => {
