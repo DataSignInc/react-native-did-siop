@@ -5,6 +5,13 @@
 * https://identity.foundation/did-siop/
 * https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
 
+## Install
+
+(Work in progress)
+
+`node-libs-react-native` is probably needed. 
+
+
 ## Usage
 
 ~~~typescript
