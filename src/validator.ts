@@ -11,7 +11,7 @@ export default class SIOPValidator {
 
     // validate paramters
     const requestObject = decoded.payload;
-    this.validateOIDCParameters(request, requestObject);
+    await this.validateOIDCParameters(request, requestObject);
     const registration = await getRegistration(requestObject);
     this.validateDIDAuthnParameters(
       requestObject as RequestObject,
