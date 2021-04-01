@@ -1,7 +1,7 @@
 // Note: test renderer must be required after react-native.
 import {ECKeyPair} from '../src/keys/ec';
 import Persona from '../src/persona';
-import {Provider} from '../src/siop';
+import Provider from '../src/siop';
 import * as consts from './consts';
 
 import * as utils from '../src/sioputils';

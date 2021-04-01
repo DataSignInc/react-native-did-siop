@@ -26,7 +26,6 @@ export class ECKeyPair {
   getJWK() {
     const publicKey = this.keyPair.getPublic('hex');
     const a = keyto.from(publicKey, 'blk').toJwk('public');
-    console.log(a);
     return a;
   }
 }

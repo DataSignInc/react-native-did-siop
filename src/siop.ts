@@ -1,13 +1,12 @@
-import {debug} from './log';
 import SIOPValidator from './validator';
-import {Request, RequestObject, IDToken} from './siop-schema';
-import {SIOPRequestValidationError, SIOPResponseGenerationError} from './error';
+import {RequestObject, IDToken} from './siop-schema';
+import {SIOPResponseGenerationError} from './error';
 import Persona from './persona';
 import {getIssuedAt} from './sioputils';
 import {ECKeyPair} from './keys/ec';
 import {ec as EC} from 'elliptic';
 
-export class Provider {
+export default class Provider {
   private expiresIn: number;
   private requestObject: any;
   constructor(expiresIn: number) {
@@ -36,7 +35,6 @@ export class Provider {
       state: request.state,
       sub_jwk: persona.getMinimalJWK(),
     };
-    debug(idToken);
 
     const jws = await persona.sign(idToken);
     return jws;
@@ -51,7 +49,6 @@ export class Provider {
       // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
       // Is `state` not needed neither?
       const location = `${request.client_id}#id_token=${idToken}`;
-      debug(location);
       return location;
     } catch (error) {
       throw new SIOPResponseGenerationError(error);

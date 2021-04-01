@@ -76,14 +76,4 @@ describe('request validation', () => {
     JWT.verifyJWT.mockResolvedValue(undefined);
     await validator.validateSIOPRequest(consts.request);
   });
-  //   test('validate OAuth 2 Parameters', async () => {
-  //     const request = {
-  //       client_id: 'http://192.168.0.6:5001/home',
-  //       request:
-  //         'eyJhbGciOiJFUzI1NkstUiIsInR5cCI6IkpXVCIsImtpZCI6ImRpZDpldGhyOjB4QTUxRTgyODFjMjAxY2Q2RWQ0ODhDMzcwMTg4MkE0NEIxODcxREFkNiNjb250cm9sbGVyIn0.eyJpc3MiOiJkaWQ6ZXRocjoweEE1MUU4MjgxYzIwMWNkNkVkNDg4QzM3MDE4ODJBNDRCMTg3MURBZDYiLCJyZXNwb25zZV90eXBlIjoiaWRfdG9rZW4iLCJzY29wZSI6Im9wZW5pZCBkaWRfYXV0aG4iLCJjbGllbnRfaWQiOiJodHRwOi8vMTkyLjE2OC4wLjY6NTAwMS9ob21lIiwicmVnaXN0cmF0aW9uIjp7ImF1dGhvcml6YXRpb25fZW5kcG9pbnQiOiJvcGVuaWQ6IiwiaXNzdWVyIjoiaHR0cHM6Ly9zZWxmLWlzc3VlZC5tZS92MiIsInJlc3BvbnNlX3R5cGVzX3N1cHBvcnRlZCI6WyJpZF90b2tlbiJdLCJzY29wZXNfc3VwcG9ydGVkIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsImFkZHJlc3MiLCJwaG9uZSJdLCJzdWJqZWN0X3R5cGVzX3N1cHBvcnRlZCI6WyJwYWlyd2lzZSJdLCJzdWJqZWN0X2lkZW50aWZpZXJfdHlwZXNfc3VwcG9ydGVkIjpbImRpZDp3ZWI6IiwiZGlkOmlvbjoiXSwiaWRfdG9rZW5fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJFUzI1NkstUiIsIkVkRFNBIiwiUlMyNTYiXSwicmVxdWVzdF9vYmplY3Rfc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJFUzI1NiIsIkVTMjU2SyJdLCJyZWRpcmVjdF91cmlzIjpbImh0dHA6Ly8xOTIuMTY4LjAuNjo1MDAxL2hvbWUiXSwiandrc191cmkiOiJodHRwczovL3VuaXJlc29sdmVyLmlvLzEuMC9pZGVudGlmaWVycy9kaWQ6ZXhhbXBsZToweGFiO3RyYW5zZm9ybS1rZXlzPWp3a3MiLCJkaWQiOiJkaWQ6ZXRocjoweEE1MUU4MjgxYzIwMWNkNkVkNDg4QzM3MDE4ODJBNDRCMTg3MURBZDYifSwicmVkaXJlY3RfdXJpIjoiaHR0cDovLzE5Mi4xNjguMC42OjUwMDEvaG9tZSJ9.aFh44Jxo3XuljnhYG8KffbRlglcx-hoCoEF5YC1qIm_FCVoQ2YVhFRb7rxjefSaGDGuQFsREBujoDWTlSRLNsgE',
-  //       response_type: 'id_token',
-  //       scope: 'openid did_authn',
-  //     };
-  //     expect(() => provider.validateOAuth2Parameters(request));
-  //   });
 });
