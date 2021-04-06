@@ -24,7 +24,7 @@ describe('siop', () => {
 
   const expiresIn = 3600;
 
-  test('receiveRequestParamaters() raises no errors', async () => {
+  test('receiveRequest() raises no errors', async () => {
     const provider = new Provider(expiresIn);
 
     await expect(provider.receiveRequest(consts.request)).resolves.toBe(
@@ -32,7 +32,7 @@ describe('siop', () => {
     );
   });
 
-  test('receiveRequestParamaters() raises errors on validation failure', async () => {
+  test('receiveRequest() raises errors on validation failure', async () => {
     const invalidRequest = {...consts.request};
     invalidRequest.response_type = 'invalid';
     const provider = new Provider(expiresIn);

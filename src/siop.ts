@@ -5,7 +5,7 @@ import Persona from './persona';
 import {getIssuedAt} from './sioputils';
 import {ECKeyPair} from './keys/ec';
 import {ec as EC} from 'elliptic';
-
+import queryString from 'query-string';
 export default class Provider {
   private expiresIn: number;
   private requestObject: any;
@@ -13,8 +13,12 @@ export default class Provider {
     this.expiresIn = expiresIn;
   }
 
-  async receiveRequest(paramsOrUrl: any) {
-    let params = paramsOrUrl instanceof String ? null : paramsOrUrl;
+  async receiveRequest(paramsOrUrl: object | string) {
+    let params =
+      typeof paramsOrUrl === 'string'
+        ? queryString.parse(paramsOrUrl)
+        : paramsOrUrl;
+
     const validator = new SIOPValidator();
     const {request, requestObject} = await validator.validateSIOPRequest(
       params,
