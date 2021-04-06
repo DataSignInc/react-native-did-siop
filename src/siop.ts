@@ -1,11 +1,14 @@
 import SIOPValidator from './validator';
 import {RequestObject, IDToken} from './siop-schema';
-import {SIOPResponseGenerationError} from './error';
+import {
+  SIOPError,
+  SIOPRequestValidationError,
+  SIOPResponseGenerationError,
+} from './error';
 import Persona from './persona';
-import {getIssuedAt} from './sioputils';
+import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
 import {ECKeyPair} from './keys/ec';
 import {ec as EC} from 'elliptic';
-import queryString from 'query-string';
 export default class Provider {
   private expiresIn: number;
   private requestObject: any;
@@ -13,10 +16,22 @@ export default class Provider {
     this.expiresIn = expiresIn;
   }
 
-  async receiveRequest(paramsOrUrl: object | string) {
+  receiveRequest(paramsOrUrl: object | string) {
+    try {
+      return this._receiveRequest(paramsOrUrl);
+    } catch (error) {
+      if (error instanceof SIOPError) {
+        throw error;
+      } else {
+        throw new SIOPRequestValidationError(error);
+      }
+    }
+  }
+
+  private async _receiveRequest(paramsOrUrl: object | string) {
     let params =
       typeof paramsOrUrl === 'string'
-        ? queryString.parse(paramsOrUrl)
+        ? parseSIOPRequestUri(paramsOrUrl)
         : paramsOrUrl;
 
     const validator = new SIOPValidator();
