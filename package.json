@@ -1,7 +1,7 @@
 {
-  "name": "react-native-did-siop",
+  "name": "@datasigninc/react-native-did-siop",
   "version": "0.5.1",
-  "private": true,
+  "repository": "git://github.com/DataSignInc/react-native-did-siop",
   "description": "A React Native library for did-siop v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities). Only including Provider funcionality.",
   "main": "./dist/index.js",
   "react-native": "dist/index.js",
@@ -9,8 +9,7 @@
     "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "preinstall": "rm -rf node_modules"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [
     "Self_Severign_Identity",
@@ -51,6 +50,7 @@
     "metro-react-native-babel-preset": "^0.59.0",
     "prettier": "^2.2.1",
     "prettier-eslint": "^12.0.0",
+    "react-native": "^0.64.0",
     "typescript": "^3.8.3"
   },
   "jest": {

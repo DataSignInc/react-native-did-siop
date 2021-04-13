@@ -1,0 +1,25 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: testing with jest
+
+on:
+  push:
+    paths:
+      - "!README.md"
+    branches-ignore:
+      - "main"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install libraries
+        run: yarn install
+
+      - name: run test suite
+        run: yarn test --coverage
