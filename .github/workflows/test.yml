@@ -4,6 +4,10 @@ name: testing with jest
 
 on:
   push:
+    paths:
+      - "!README.md"
+    branches-ignore:
+      - "main"
 
 jobs:
   test:
