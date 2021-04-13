@@ -9,8 +9,7 @@
     "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "preinstall": "rm -rf node_modules"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [
     "Self_Severign_Identity",
