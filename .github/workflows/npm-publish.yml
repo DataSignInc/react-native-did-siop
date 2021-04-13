@@ -18,8 +18,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      # set --production=false to install devDependencies
-      - run: yarn install --production=false
+      - run: yarn install
       - run: yarn build
       - run: yarn test --coverage
 
@@ -47,7 +46,7 @@ jobs:
   #       with:
   #         node-version: 14
   #         registry-url: https://npm.pkg.github.com/
-  #     - run: yarn install --production=false
+  #     - run: yarn install
   #     - run: yarn build
   #     - run: npm publish
   #       env:
