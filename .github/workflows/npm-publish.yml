@@ -11,7 +11,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,10 +19,6 @@ jobs:
         with:
           node-version: 14
       - run: yarn install
-      - run: yarn build
-            # 参照: https://github.com/marketplace/actions/debugging-with-tmate
-      - name: Setup tmate session for debugging GitHub Actions
-        uses: mxschmitt/action-tmate@v3
       - run: yarn test --coverage
 
 #   publish-npm:
@@ -40,17 +36,17 @@ jobs:
 #         env:
 #           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
-  # publish-gpr:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 14
-  #         registry-url: https://npm.pkg.github.com/
-  #     - run: yarn install
-  #     - run: yarn build
-  #     - run: npm publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com/
+      - run: yarn install
+      - run: yarn build
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
