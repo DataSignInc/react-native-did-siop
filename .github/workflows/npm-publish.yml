@@ -19,19 +19,19 @@ jobs:
         with:
           node-version: 14
 
-    - name: Cache Primes
-      id: cache-node_modules
-      uses: actions/cache@v2
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('package.json') }}
+      - name: Cache Primes
+        id: cache-node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('package.json') }}
 
-    - name: Generate Prime Numbers
-      if: steps.cache-node_modules.outputs.cache-hit != 'true'
-      run: yarn install
+      - name: Generate Prime Numbers
+        if: steps.cache-node_modules.outputs.cache-hit != 'true'
+        run: yarn install
 
-    - name: run test suite
-      run: yarn test --coverage
+      - name: run test suite
+        run: yarn test --coverage
 
 #   publish-npm:
 #     needs: build
