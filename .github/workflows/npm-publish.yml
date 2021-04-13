@@ -20,6 +20,9 @@ jobs:
           node-version: 14
       - run: yarn install
       - run: yarn build
+            # 参照: https://github.com/marketplace/actions/debugging-with-tmate
+      - name: Setup tmate session for debugging GitHub Actions
+        uses: mxschmitt/action-tmate@v3
       - run: yarn test --coverage
 
 #   publish-npm:
