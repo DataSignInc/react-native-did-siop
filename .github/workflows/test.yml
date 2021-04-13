@@ -14,15 +14,7 @@ jobs:
         with:
           node-version: 14
 
-      - name: Cache node_modules
-        id: cache-node_modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('package.json') }}
-
       - name: Install libraries
-        if: steps.cache-node_modules.outputs.cache-hit != 'true'
         run: yarn install
 
       - name: run test suite
