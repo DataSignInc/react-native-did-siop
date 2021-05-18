@@ -1,6 +1,6 @@
 {
   "name": "@datasigninc/react-native-did-siop",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "repository": "git://github.com/DataSignInc/react-native-did-siop",
   "description": "A React Native library for did-siop v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities). Only including Provider funcionality.",
   "main": "./dist/index.js",
