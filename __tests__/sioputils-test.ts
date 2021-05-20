@@ -108,7 +108,6 @@ describe('sioputils', () => {
       ...consts.registration1,
       jwks_uri: 'https://example.com',
     };
-    console.log(registration);
     await expect(utils.getJwks(registration)).resolves.toMatchObject(
       expectedJwks,
     );
