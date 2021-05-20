@@ -6,12 +6,15 @@ import {Registration, Request, RequestObject} from './siop-schema';
 import {getRegistration, getJwks, getRequestObject} from './sioputils';
 export default class SIOPValidator {
   async validateSIOPRequest(request: any) {
-    const decoded = await this.validateSignature(request.request);
-
     // validate paramters
+    // const requestObject = decoded.payload;
+    await this.validateOIDCQueryParameters(request);
+    const requestObjectJWT = await getRequestObject(request);
+    const decoded = await this.validateSignature(requestObjectJWT);
     const requestObject = decoded.payload;
-    await this.validateOIDCParameters(request, requestObject);
+
     const registration = await getRegistration(requestObject);
+    await this.validateRequestObject(requestObject, request, registration);
     this.validateDIDAuthnParameters(
       requestObject as RequestObject,
       registration,
@@ -93,7 +96,7 @@ export default class SIOPValidator {
     }
   }
 
-  async validateOIDCParameters(params: any, requestObject: any) {
+  async validateOIDCQueryParameters(params: any) {
     /*
       Procedure:
 
@@ -141,14 +144,16 @@ export default class SIOPValidator {
 
     this.validateScope(params.scope);
     this.validateResponseType(params.response_type);
+  }
 
-    // TODO: this request is not decoded if it's from the request_uri parameter.
-    const request = await getRequestObject(params);
-    const registration = await getRegistration(requestObject);
+  async validateRequestObject(
+    requestObject: any,
+    params: any,
+    registration: Registration,
+  ) {
     const jwks = await getJwks(registration);
 
     this.validateClientId(params, requestObject, registration);
-
     this.validateIss(requestObject.iss, registration);
     this.validateKid(requestObject.kid, registration, jwks);
   }

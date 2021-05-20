@@ -1,4 +1,5 @@
-// Note: test renderer must be required after react-native.
+import fetchMock from 'jest-fetch-mock';
+
 import {ECKeyPair} from '../src/keys/ec';
 import Persona from '../src/persona';
 import Provider from '../src/siop';
@@ -7,11 +8,13 @@ import * as consts from './consts';
 import * as utils from '../src/sioputils';
 import {SIOPRequestValidationError} from '../src/error';
 jest.mock('../src/sioputils');
+fetchMock.enableMocks();
 
 describe('siop', () => {
-  const privateKeyHex =
-    '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f';
-
+  beforeEach(() => {
+    // @ts-expect-error 2339
+    fetch.resetMocks();
+  });
   const expectedIDToken =
     'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIn0.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVUNLb2FNNkk3NkpJdTQ2YkdVYUNmTVNuUXdNVUl1S21vUkYwYm5ZekxkNCIsImRpZCI6ImRpZDpleGFtcGxlOmFiIiwiYXVkIjoiaHR0cDovLzE5Mi4xNjguMC41OjUwMDEvaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiSy0yNTYiLCJ4IjoiclQ2MW52dXoyTENSeng0VzFFZkV3R0FpVmdDdU42YUtUVy1QWjQ2cUQxRSIsInkiOiJBQkdsMVByNnY3blZ3dmFhMWcxNG01TTdvR2dxczIzRnBmNzgweC1WSnBNIn19.CUxOR31FRKo0RVkStp6dY3goWSKsC722b3dcAfgBKVGRuQF8GRJMgTi9WV1m_C739tN2ynT9K7IZP10iO95fvQ';
 
@@ -26,6 +29,19 @@ describe('siop', () => {
 
   test('receiveRequest() raises no errors', async () => {
     const provider = new Provider(expiresIn);
+    // @ts-expect-error 2339
+    utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
+    await expect(provider.receiveRequest(consts.request)).resolves.toBe(
+      consts.client_id,
+    );
+  });
+
+  test('receiveRequest() accepts request_uri', async () => {
+    // @ts-expect-error 2339
+    utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
+    const provider = new Provider(expiresIn);
+    const request = {request_uri: 'https://example.com', ...consts.request};
+    request.request = undefined;
 
     await expect(provider.receiveRequest(consts.request)).resolves.toBe(
       consts.client_id,
@@ -54,7 +70,8 @@ describe('siop', () => {
 
   test('generate response', async () => {
     const provider = new Provider(expiresIn);
-
+    // @ts-expect-error 2322
+    utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
     // @ts-expect-error 2322
     utils.getIssuedAt.mockReturnValueOnce(1616669045);
     await provider.receiveRequest(consts.request);
