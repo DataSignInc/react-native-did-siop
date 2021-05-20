@@ -35,7 +35,7 @@ describe('request validation', () => {
 
   test('validate OIDC Parameters', async () => {
     await expect(
-      validator.validateOIDCParameters(consts.request, consts.requestObject),
+      validator.validateOIDCQueryParameters(consts.request),
     ).resolves.toBeUndefined();
   });
 

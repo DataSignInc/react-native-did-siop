@@ -50,7 +50,7 @@ const resolveUriParameter = async (
 };
 
 export const getRequestObject = async (params: any) => {
-  return await resolveUriParameter(
+  return resolveUriParameter(
     params.request,
     params.request_uri,
     'invalid_request_uri',
