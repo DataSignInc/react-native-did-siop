@@ -4,6 +4,7 @@ import * as consts from './consts';
 import * as utils from '../src/sioputils';
 
 import fetchMock from 'jest-fetch-mock';
+import {SIOPRequestValidationError} from '../src/error';
 
 fetchMock.enableMocks();
 
@@ -14,13 +15,43 @@ describe('sioputils', () => {
     // @ts-expect-error 2339
     fetch.resetMocks();
   });
-  test('getRequestObject()', async () => {
+  test('getRequestObject() without request or request_uri throws error', async () => {
+    // @ts-expect-error 2339
+    fetch.mockResponseOnce(jwt);
+    const params = {};
+    await expect(utils.getRequestObject(params)).rejects.toThrowError(
+      new SIOPRequestValidationError('invalid_request'),
+    );
+  });
+
+  test('getRequestObject(params) picks params.request when request_uri is undefined', async () => {
+    const expectedRequestObject = {test: 1};
+    // @ts-expect-error 2339
+    fetch.mockResponseOnce(jwt);
+    const params = {
+      request: expectedRequestObject,
+    };
+    await expect(utils.getRequestObject(params)).resolves.toMatchObject(
+      expectedRequestObject,
+    );
+  });
+
+  test('getRequestObject() fetchs request_uri', async () => {
     // @ts-expect-error 2339
     fetch.mockResponseOnce(jwt);
     const params = {
       request_uri: 'https://example.com',
     };
     await expect(utils.getRequestObject(params)).resolves.toMatch(jwt);
+  });
+
+  test('getRequestObject() encountering HTTPS error throus error', async () => {
+    const params = {
+      request_uri: 'http://we-do-not-accept-http-without-tls.com',
+    };
+    await expect(utils.getRequestObject(params)).rejects.toThrowError(
+      new SIOPRequestValidationError('invalid_request_uri'),
+    );
   });
 
   test('getRegistration()', async () => {
@@ -32,6 +63,19 @@ describe('sioputils', () => {
     };
     await expect(utils.getRegistration(params)).resolves.toMatchObject(
       consts.registration1,
+    );
+  });
+
+  test('getRegistration() throus errors when fetching JSON with different schema', async () => {
+    const invalidResistration = {scheme: 'invalid'};
+    const json = JSON.stringify(invalidResistration);
+    // @ts-expect-error 2339
+    fetch.mockResponseOnce(json);
+    const params = {
+      registration_uri: 'https://example.com',
+    };
+    await expect(utils.getRegistration(params)).rejects.toThrowError(
+      new SIOPRequestValidationError('invalid_registration_object'),
     );
   });
 

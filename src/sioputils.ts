@@ -31,6 +31,12 @@ const resolveUriParameter = async (
           // Contents of request_uri is plain JWTs (not wrapped in JSON).
           return bodyText.trimEnd();
         }
+      } else {
+        throw new SIOPRequestValidationError(
+          errorCodeOnInvalidUri,
+          'something',
+          something_uri,
+        );
       }
     } catch (error) {
       console.error(error);
