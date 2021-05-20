@@ -57,4 +57,3 @@ import {SIOPError, SIOPRequestValidationError, SIOPResponseGenerationError} from
     - Validating `jwks` in `registration` parameter contains `iss` in request objects.
     - Additional did authn verification when `kid`s in request object and jwt header are different.
 * Protocol negotiation based on the `registration` parameter is skipped. Its future support will not change the API of the library because this negotiation doesn't add extra network communication. 
-* the `request_uri` parameter is not supported.
