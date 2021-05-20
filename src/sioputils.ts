@@ -23,15 +23,17 @@ const resolveUriParameter = async (
     try {
       if (something_uri.startsWith('https://')) {
         const result = await fetch(something_uri);
+        const bodyText = await result.text();
         try {
-          const jsonData = await result.json();
+          const jsonData = JSON.parse(bodyText);
           return jsonData;
         } catch (error) {
           // Contents of request_uri is plain JWTs (not wrapped in JSON).
-          return result.text.toString().trimEnd();
+          return bodyText.trimEnd();
         }
       }
     } catch (error) {
+      console.error(error);
       throw new SIOPRequestValidationError(
         errorCodeOnInvalidUri,
         'something',

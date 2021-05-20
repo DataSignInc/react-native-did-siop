@@ -3,17 +3,49 @@ import * as consts from './consts';
 
 import * as utils from '../src/sioputils';
 
-describe('siop', () => {
+import fetchMock from 'jest-fetch-mock';
+
+fetchMock.enableMocks();
+
+describe('sioputils', () => {
   const jwt = 'ey...';
-  test('getRequestObject', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve(jwt),
-      }),
-    );
+
+  beforeEach(() => {
+    // @ts-expect-error 2339
+    fetch.resetMocks();
+  });
+  test('getRequestObject()', async () => {
+    // @ts-expect-error 2339
+    fetch.mockResponseOnce(jwt);
     const params = {
       request_uri: 'https://example.com',
     };
     await expect(utils.getRequestObject(params)).resolves.toMatch(jwt);
+  });
+
+  test('getRegistration()', async () => {
+    const json = JSON.stringify(consts.registration1);
+    // @ts-expect-error 2339
+    fetch.mockResponseOnce(json);
+    const params = {
+      registration_uri: 'https://example.com',
+    };
+    await expect(utils.getRegistration(params)).resolves.toMatchObject(
+      consts.registration1,
+    );
+  });
+
+  test('getJwks()', async () => {
+    const expectedJwks = {test: 1};
+    // @ts-expect-error 2339
+    fetch.mockResponseOnce(JSON.stringify(expectedJwks));
+    const registration = {
+      ...consts.registration1,
+      jwks_uri: 'https://example.com',
+    };
+    console.log(registration);
+    await expect(utils.getJwks(registration)).resolves.toMatchObject(
+      expectedJwks,
+    );
   });
 });
