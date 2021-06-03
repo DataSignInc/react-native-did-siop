@@ -62,11 +62,11 @@ export default class Provider {
     return jws;
   }
 
-  async generateResponse(did: string, keyPair: EC.KeyPair) {
+  async generateResponse(did: string, keyPair: EC.KeyPair, vp?: any) {
     try {
       const persona = new Persona(did, new ECKeyPair(keyPair));
       const request: RequestObject = this.requestObject;
-      const idToken = await this.generateIDToken(request, persona);
+      const idToken = await this.generateIDToken(request, persona, vp);
       // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
       // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
       // Is `state` not needed neither?
