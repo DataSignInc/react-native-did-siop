@@ -35,13 +35,15 @@ export default class Provider {
         : paramsOrUrl;
 
     const validator = new SIOPValidator();
-    const {request, requestObject} = await validator.validateSIOPRequest(
-      params,
-    );
+    const {requestObject} = await validator.validateSIOPRequest(params);
     this.requestObject = requestObject;
     return requestObject.client_id;
   }
-  public async generateIDToken(request: RequestObject, persona: Persona) {
+  public async generateIDToken(
+    request: RequestObject,
+    persona: Persona,
+    vp?: any,
+  ) {
     const issuedAt = getIssuedAt();
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
@@ -52,6 +54,7 @@ export default class Provider {
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
       state: request.state,
+      vp: vp,
       sub_jwk: persona.getMinimalJWK(),
     };
 
