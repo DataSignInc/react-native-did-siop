@@ -1,11 +1,13 @@
-import {ec as EC} from 'elliptic';
 import {ECKeyPair} from '../src/keys/ec';
-import * as consts from './consts';
+import {ec as EC} from 'elliptic';
 
 const ec = new EC('secp256k1');
 
 describe('key/ec', () => {
-  const keyPair = new ECKeyPair(consts.sekp256k1Key);
+  const sekp256k1Key = ec.keyFromPrivate(
+    '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710',
+  );
+  const keyPair = new ECKeyPair(sekp256k1Key);
 
   test('sign', async () => {
     const expected =
