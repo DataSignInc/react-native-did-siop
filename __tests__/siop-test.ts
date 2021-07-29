@@ -20,12 +20,12 @@ describe('siop', () => {
     // @ts-expect-error 2339
     jwtModule.verifyJWT.mockResolvedValue(undefined);
     // @ts-expect-error 2339
-    // jwtModule.calculateJWKThumprint.mockReturnValue(
-    //   'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4',
-    // );
+    jwtModule.calculateJWKThumprint.mockReturnValue(
+      'V9vpz4lj1QW047t29hW28vPsYSgWJnjqPrQoPbt_x0Y',
+    );
   });
   const expectedIDToken =
-    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciJ9.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwiZGlkIjoiZGlkOnN0dWI6dXNlci0xIiwiYXVkIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9ob21lIiwiaWF0IjoxNjE2NjY5MDQ1LCJleHAiOjE2MTY2NzI2NDUsInN1Yl9qd2siOnsia3R5IjoiRUMiLCJjcnYiOiJLLTI1NiIsIngiOiJDWGc2aDVLaGtya2NmSFpDSFczVTJkVmk1LWtDSURPYWk1REFKM2ZyNjFZIiwieSI6IjZiWEVkQnFNbEE1WXZWZGNzVVA5SGdTb3d5TDBlSHhfTDUxQ09oOVcyelEifX0.b8zHL5rQTLlfJYBLPoHNVllMjoQvfw9Iml-nTTPUW2ZM7OrmRSioXqZ2bSHLPoGQ7rnlX7f1jFsOgVxbPFg5cA';
+    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciJ9.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVjl2cHo0bGoxUVcwNDd0MjloVzI4dlBzWVNnV0puanFQclFvUGJ0X3gwWSIsImRpZCI6ImRpZDpzdHViOnVzZXItMSIsImF1ZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiSy0yNTYiLCJ4IjoiQ1hnNmg1S2hrcmtjZkhaQ0hXM1UyZFZpNS1rQ0lET2FpNURBSjNmcjYxWSIsInkiOiI2YlhFZEJxTWxBNVl2VmRjc1VQOUhnU293eUwwZUh4X0w1MUNPaDlXMnpRIn19.W0L-IUYisuNC7nh0SlCtgbV7a43xehoZG1X-LBy28L60fcDc9gtni4IxllbDOI7KZ6_uSrCiuHJxGvIYYYFdag';
 
   const persona = new Persona(
     'did:stub:user-1',
