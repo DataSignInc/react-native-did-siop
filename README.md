@@ -21,7 +21,8 @@ import {SIOPError, SIOPRequestValidationError, SIOPResponseGenerationError} from
 
         try {
           const idTokenExpiresIn = 3600;
-          const provider = new Provider(idTokenExpiresIn);
+          const resolver = new Resolver({...getWebResolver()});
+          const provider = new Provider(idTokenExpiresIn, resolver);
           // route.params is parsed by react-navigation.
           const clientId = await provider.receiveRequest(route.params);
 
@@ -51,7 +52,6 @@ import {SIOPError, SIOPRequestValidationError, SIOPResponseGenerationError} from
 
 * JWE is not supported.
 * Currently the ec keys with the `secp256k1` curve is the only supported key type for users. RP can use other types of keys.
-* You cannot select the DID methods to use. `did:web:` and `did:ethr:` is the only choises.
 * You need to choose personas only with the `client_id` of RP. Other parameters sent from RP are not exposed to outside of the library.
 * Some parameter validations are omitted. These are:
     - Validating `jwks` in `registration` parameter contains `iss` in request objects.
