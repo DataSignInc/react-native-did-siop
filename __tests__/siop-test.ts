@@ -21,23 +21,23 @@ describe('siop', () => {
     jwtModule.verifyJWT.mockResolvedValue(undefined);
     // @ts-expect-error 2339
     jwtModule.calculateJWKThumprint.mockReturnValue(
-      'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4',
+      'V9vpz4lj1QW047t29hW28vPsYSgWJnjqPrQoPbt_x0Y',
     );
   });
   const expectedIDToken =
-    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIn0.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVUNLb2FNNkk3NkpJdTQ2YkdVYUNmTVNuUXdNVUl1S21vUkYwYm5ZekxkNCIsImRpZCI6ImRpZDpleGFtcGxlOmFiIiwiYXVkIjoiaHR0cDovLzE5Mi4xNjguMC41OjUwMDEvaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiSy0yNTYiLCJ4IjoiclQ2MW52dXoyTENSeng0VzFFZkV3R0FpVmdDdU42YUtUVy1QWjQ2cUQxRSIsInkiOiJBQkdsMVByNnY3blZ3dmFhMWcxNG01TTdvR2dxczIzRnBmNzgweC1WSnBNIn19.CUxOR31FRKo0RVkStp6dY3goWSKsC722b3dcAfgBKVGRuQF8GRJMgTi9WV1m_C739tN2ynT9K7IZP10iO95fvQ';
+    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciJ9.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVjl2cHo0bGoxUVcwNDd0MjloVzI4dlBzWVNnV0puanFQclFvUGJ0X3gwWSIsImRpZCI6ImRpZDpzdHViOnVzZXItMSIsImF1ZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiSy0yNTYiLCJ4IjoiQ1hnNmg1S2hrcmtjZkhaQ0hXM1UyZFZpNS1rQ0lET2FpNURBSjNmcjYxWSIsInkiOiI2YlhFZEJxTWxBNVl2VmRjc1VQOUhnU293eUwwZUh4X0w1MUNPaDlXMnpRIn19.W0L-IUYisuNC7nh0SlCtgbV7a43xehoZG1X-LBy28L60fcDc9gtni4IxllbDOI7KZ6_uSrCiuHJxGvIYYYFdag';
 
   const persona = new Persona(
-    'did:example:ab',
-    new ECKeyPair(consts.sekp256k1Key),
+    'did:stub:user-1',
+    new ECKeyPair(consts.sekp256k1KeyOfUser1),
   );
 
-  const did = 'did:example:ab';
+  const did = 'did:stub:user-1';
 
   const expiresIn = 3600;
 
   test('receiveRequest() raises no errors', async () => {
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
     // @ts-expect-error 2339
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
     await expect(provider.receiveRequest(consts.request)).resolves.toBe(
@@ -48,7 +48,7 @@ describe('siop', () => {
   test('receiveRequest() accepts request_uri', async () => {
     // @ts-expect-error 2339
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
     const request = {request_uri: 'https://example.com', ...consts.request};
     request.request = undefined;
 
@@ -60,7 +60,7 @@ describe('siop', () => {
   test('receiveRequest() raises errors on validation failure', async () => {
     const invalidRequest = {...consts.request};
     invalidRequest.response_type = 'invalid';
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
 
     await expect(provider.receiveRequest(invalidRequest)).rejects.toStrictEqual(
       new SIOPRequestValidationError('unsupported_response_type'),
@@ -68,7 +68,7 @@ describe('siop', () => {
   });
 
   test('generate ID Token', async () => {
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
 
     // @ts-expect-error 2322
     utils.getIssuedAt.mockReturnValueOnce(1616669045);
@@ -78,7 +78,7 @@ describe('siop', () => {
   });
 
   test('generate response', async () => {
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
     // @ts-expect-error 2322
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
     // @ts-expect-error 2322
@@ -86,9 +86,7 @@ describe('siop', () => {
     await provider.receiveRequest(consts.request);
 
     await expect(
-      provider.generateResponse(did, consts.sekp256k1Key),
-    ).resolves.toMatch(
-      `http://192.168.0.5:5001/home#id_token=${expectedIDToken}`,
-    );
+      provider.generateResponse(did, consts.sekp256k1KeyOfUser1),
+    ).resolves.toMatch(`https://example.com/home#id_token=${expectedIDToken}`);
   });
 });

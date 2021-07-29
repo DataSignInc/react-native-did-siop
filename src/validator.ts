@@ -1,10 +1,15 @@
 import didJWT, {JWTHeader} from 'did-jwt';
+import {Resolver} from 'did-resolver';
 import {SIOPRequestValidationError} from './error';
 import {verifyJWT} from './jwt';
 import {debug} from './log';
 import {Registration, Request, RequestObject} from './siop-schema';
 import {getRegistration, getJwks, getRequestObject} from './sioputils';
 export default class SIOPValidator {
+  private resolver: Resolver;
+  constructor(resolver: Resolver) {
+    this.resolver = resolver;
+  }
   async validateSIOPRequest(request: any) {
     // validate paramters
     // const requestObject = decoded.payload;
@@ -29,7 +34,7 @@ export default class SIOPValidator {
 
   async validateSignature(jwt: string) {
     try {
-      await verifyJWT(jwt);
+      await verifyJWT(jwt, this.resolver);
       return didJWT.decodeJWT(jwt);
     } catch (error) {
       console.error('JWT verification failed');
@@ -75,7 +80,6 @@ export default class SIOPValidator {
     // }
 
     // TODO: get verification method from document corresponding with `kid`
-
     if (request.kid === jwtHeader.kid) {
       // verification success
       // because did authn is already done at previous JWS signature verification.

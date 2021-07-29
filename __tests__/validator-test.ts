@@ -6,7 +6,7 @@ import * as consts from './consts';
 jest.mock('../src/jwt');
 
 describe('request validation', () => {
-  const validator = new SIOPValidator();
+  const validator = new SIOPValidator(consts.defaultResolver);
 
   test('iss', () => {
     validator.validateIss('test');
