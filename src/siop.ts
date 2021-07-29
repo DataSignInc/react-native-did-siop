@@ -9,11 +9,14 @@ import Persona from './persona';
 import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
 import {ECKeyPair} from './keys/ec';
 import {ec as EC} from 'elliptic';
+import {Resolver} from 'did-resolver';
 export default class Provider {
   private expiresIn: number;
   private requestObject: any;
-  constructor(expiresIn: number) {
+  private resolver: Resolver;
+  constructor(expiresIn: number, resolver: Resolver) {
     this.expiresIn = expiresIn;
+    this.resolver = resolver;
   }
 
   receiveRequest(paramsOrUrl: object | string) {

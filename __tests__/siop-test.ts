@@ -37,7 +37,7 @@ describe('siop', () => {
   const expiresIn = 3600;
 
   test('receiveRequest() raises no errors', async () => {
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
     // @ts-expect-error 2339
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
     await expect(provider.receiveRequest(consts.request)).resolves.toBe(
@@ -48,7 +48,7 @@ describe('siop', () => {
   test('receiveRequest() accepts request_uri', async () => {
     // @ts-expect-error 2339
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
     const request = {request_uri: 'https://example.com', ...consts.request};
     request.request = undefined;
 
@@ -60,7 +60,7 @@ describe('siop', () => {
   test('receiveRequest() raises errors on validation failure', async () => {
     const invalidRequest = {...consts.request};
     invalidRequest.response_type = 'invalid';
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
 
     await expect(provider.receiveRequest(invalidRequest)).rejects.toStrictEqual(
       new SIOPRequestValidationError('unsupported_response_type'),
@@ -68,7 +68,7 @@ describe('siop', () => {
   });
 
   test('generate ID Token', async () => {
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
 
     // @ts-expect-error 2322
     utils.getIssuedAt.mockReturnValueOnce(1616669045);
@@ -78,7 +78,7 @@ describe('siop', () => {
   });
 
   test('generate response', async () => {
-    const provider = new Provider(expiresIn);
+    const provider = new Provider(expiresIn, consts.defaultResolver);
     // @ts-expect-error 2322
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
     // @ts-expect-error 2322
