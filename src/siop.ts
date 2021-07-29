@@ -37,7 +37,7 @@ export default class Provider {
         ? parseSIOPRequestUri(paramsOrUrl)
         : paramsOrUrl;
 
-    const validator = new SIOPValidator();
+    const validator = new SIOPValidator(this.resolver);
     const {requestObject} = await validator.validateSIOPRequest(params);
     this.requestObject = requestObject;
     return requestObject.client_id;

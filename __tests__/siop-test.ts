@@ -20,19 +20,19 @@ describe('siop', () => {
     // @ts-expect-error 2339
     jwtModule.verifyJWT.mockResolvedValue(undefined);
     // @ts-expect-error 2339
-    jwtModule.calculateJWKThumprint.mockReturnValue(
-      'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4',
-    );
+    // jwtModule.calculateJWKThumprint.mockReturnValue(
+    //   'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4',
+    // );
   });
   const expectedIDToken =
-    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIn0.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVUNLb2FNNkk3NkpJdTQ2YkdVYUNmTVNuUXdNVUl1S21vUkYwYm5ZekxkNCIsImRpZCI6ImRpZDpleGFtcGxlOmFiIiwiYXVkIjoiaHR0cDovLzE5Mi4xNjguMC41OjUwMDEvaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiSy0yNTYiLCJ4IjoiclQ2MW52dXoyTENSeng0VzFFZkV3R0FpVmdDdU42YUtUVy1QWjQ2cUQxRSIsInkiOiJBQkdsMVByNnY3blZ3dmFhMWcxNG01TTdvR2dxczIzRnBmNzgweC1WSnBNIn19.CUxOR31FRKo0RVkStp6dY3goWSKsC722b3dcAfgBKVGRuQF8GRJMgTi9WV1m_C739tN2ynT9K7IZP10iO95fvQ';
+    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciJ9.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwiZGlkIjoiZGlkOnN0dWI6dXNlci0xIiwiYXVkIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9ob21lIiwiaWF0IjoxNjE2NjY5MDQ1LCJleHAiOjE2MTY2NzI2NDUsInN1Yl9qd2siOnsia3R5IjoiRUMiLCJjcnYiOiJLLTI1NiIsIngiOiJDWGc2aDVLaGtya2NmSFpDSFczVTJkVmk1LWtDSURPYWk1REFKM2ZyNjFZIiwieSI6IjZiWEVkQnFNbEE1WXZWZGNzVVA5SGdTb3d5TDBlSHhfTDUxQ09oOVcyelEifX0.b8zHL5rQTLlfJYBLPoHNVllMjoQvfw9Iml-nTTPUW2ZM7OrmRSioXqZ2bSHLPoGQ7rnlX7f1jFsOgVxbPFg5cA';
 
   const persona = new Persona(
-    'did:example:ab',
-    new ECKeyPair(consts.sekp256k1Key),
+    'did:stub:user-1',
+    new ECKeyPair(consts.sekp256k1KeyOfUser1),
   );
 
-  const did = 'did:example:ab';
+  const did = 'did:stub:user-1';
 
   const expiresIn = 3600;
 
@@ -86,9 +86,7 @@ describe('siop', () => {
     await provider.receiveRequest(consts.request);
 
     await expect(
-      provider.generateResponse(did, consts.sekp256k1Key),
-    ).resolves.toMatch(
-      `http://192.168.0.5:5001/home#id_token=${expectedIDToken}`,
-    );
+      provider.generateResponse(did, consts.sekp256k1KeyOfUser1),
+    ).resolves.toMatch(`https://example.com/home#id_token=${expectedIDToken}`);
   });
 });
