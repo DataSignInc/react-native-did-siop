@@ -1,7 +1,7 @@
 import base64url from 'base64url';
 import Base64 from 'crypto-js/enc-base64';
 import sha256 from 'crypto-js/sha256';
-import didJWT from 'did-jwt';
+import * as didJWT from 'did-jwt';
 import {Resolver} from 'did-resolver';
 export interface JWTHeader {
   typ: string;

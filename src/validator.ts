@@ -1,4 +1,4 @@
-import didJWT, {JWTHeader} from 'did-jwt';
+import {JWTHeader, decodeJWT} from 'did-jwt';
 import {Resolver} from 'did-resolver';
 import {SIOPRequestValidationError} from './error';
 import {verifyJWT} from './jwt';
@@ -35,7 +35,7 @@ export default class SIOPValidator {
   async validateSignature(jwt: string) {
     try {
       await verifyJWT(jwt, this.resolver);
-      return didJWT.decodeJWT(jwt);
+      return decodeJWT(jwt);
     } catch (error) {
       console.error('JWT verification failed');
       console.error(error);
