@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import queryString from 'query-string';
 import { SIOPRequestValidationError } from './error';
-import validateRegistraion from './siop-schema.d.validator';
+import validateRegistration, { errors as registrationErrors, } from './ajv-schemas/registration';
 export const getIssuedAt = () => Math.floor(Date.now() / 1000);
 export const parseSIOPRequestUri = (uri) => queryString.parse(uri);
 const resolveUriParameter = (something, something_uri, errorCodeOnInvalidUri = 'invalid_request') => __awaiter(void 0, void 0, void 0, function* () {
@@ -49,10 +49,12 @@ export const getRequestObject = (params) => __awaiter(void 0, void 0, void 0, fu
 });
 export const getRegistration = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const registrationWithoutType = yield resolveUriParameter(request.registration, request.registration_uri, 'invalid_registration_uri');
-    try {
-        return validateRegistraion(registrationWithoutType);
+    const isValid = validateRegistration(registrationWithoutType);
+    if (isValid) {
+        return registrationWithoutType;
     }
-    catch (error) {
+    else {
+        const error = JSON.stringify(registrationErrors, null, 2);
         console.error(error);
         console.error(JSON.stringify(registrationWithoutType, null, 2));
         throw new SIOPRequestValidationError('invalid_registration_object', error);
