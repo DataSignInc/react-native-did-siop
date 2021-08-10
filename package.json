@@ -10,7 +10,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "generate-json-schema": "npx typescript-json-validator src/siop-schema.d.ts Registration"
+    "generate-json-schema": "npx typescript-json-validator src/siop-schema.d.ts Registration",
+    "ajv:compile": "ajv compile -s src/registration.json -o src/ajv-schemas/registration.js"
   },
   "keywords": [
     "Self_Severign_Identity",
