@@ -2,7 +2,9 @@ import queryString from 'query-string';
 
 import {SIOPRequestValidationError} from './error';
 import {ErrorCode, Registration} from './siop-schema';
-import validateRegistraion from './siop-schema.d.validator';
+import validateRegistration, {
+  errors as registrationErrors,
+} from './ajv-schemas/registration';
 
 export const getIssuedAt = () => Math.floor(Date.now() / 1000);
 
@@ -63,9 +65,11 @@ export const getRegistration = async (request: any) => {
     request.registration_uri,
     'invalid_registration_uri',
   );
-  try {
-    return validateRegistraion(registrationWithoutType);
-  } catch (error) {
+  const isValid = validateRegistration(registrationWithoutType);
+  if (isValid) {
+    return registrationWithoutType as Registration;
+  } else {
+    const error = JSON.stringify(registrationErrors, null, 2);
     console.error(error);
     console.error(JSON.stringify(registrationWithoutType, null, 2));
     throw new SIOPRequestValidationError('invalid_registration_object', error);

@@ -9,7 +9,9 @@
     "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "generate-json-schema": "npx typescript-json-validator src/siop-schema.d.ts Registration",
+    "ajv:compile": "ajv compile -s src/registration.json -o src/ajv-schemas/registration.js"
   },
   "keywords": [
     "Self_Severign_Identity",
@@ -43,6 +45,7 @@
     "@types/elliptic": "^6.4.12",
     "@types/jest": "^25.2.3",
     "@types/react-native": "^0.63.2",
+    "ajv-cli": "3.3.0",
     "babel-jest": "^25.1.0",
     "eslint": "^6.5.1",
     "ethr-did-resolver": "^4.3.4",

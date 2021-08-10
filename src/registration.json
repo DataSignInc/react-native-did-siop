@@ -1,0 +1,153 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+      "authorization_endpoint": {
+        "enum": [
+          "openid:"
+        ],
+        "type": "string"
+      },
+      "credential_formats_supported": {
+        "items": {
+          "enum": [
+            "jwt",
+            "jwt_vc",
+            "jwt_vp",
+            "ldp_vc",
+            "ldp_vp"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "did": {
+        "type": "string"
+      },
+      "did_methods_supported": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "id_token_encrypted_response_alg": {
+        "type": "string"
+      },
+      "id_token_encrypted_response_enc": {
+        "type": "string"
+      },
+      "id_token_signing_alg_values_supported": {
+        "items": {
+          "enum": [
+            "ES256",
+            "ES256K",
+            "EdDSA",
+            "RS256"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "issuer": {
+        "enum": [
+          "https://self-issued.me/v2"
+        ],
+        "type": "string"
+      },
+      "jwks": {
+      },
+      "jwks_uri": {
+        "type": "string"
+      },
+      "logo_uri": {
+        "type": "string"
+      },
+      "policy_uri": {
+        "type": "string"
+      },
+      "redirect_uris": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "request_object_signing_alg_values_supported": {
+        "items": {
+          "enum": [
+            "ES256",
+            "ES256K",
+            "EdDSA",
+            "RS256",
+            "none"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "response_types_supported": {
+        "additionalItems": {
+          "anyOf": [
+            {
+              "enum": [
+                "id_token"
+              ],
+              "type": "string"
+            }
+          ]
+        },
+        "items": [
+          {
+            "enum": [
+              "id_token"
+            ],
+            "type": "string"
+          }
+        ],
+        "minItems": 1,
+        "type": "array"
+      },
+      "scopes_supported": {
+        "items": {
+          "enum": [
+            "address",
+            "email",
+            "openid",
+            "phone",
+            "profile"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "subject_identifier_types_supported": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "subject_types_supported": {
+        "items": {
+          "enum": [
+            "pairwise",
+            "public"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "tos_uri": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "authorization_endpoint",
+      "credential_formats_supported",
+      "id_token_signing_alg_values_supported",
+      "issuer",
+      "request_object_signing_alg_values_supported",
+      "response_types_supported",
+      "scopes_supported",
+      "subject_identifier_types_supported",
+      "subject_types_supported"
+    ],
+    "type": "object"
+  }
