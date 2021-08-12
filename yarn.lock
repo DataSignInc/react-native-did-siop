@@ -1026,7 +1026,6 @@ __metadata:
     "@babel/core": ^7.8.4
     "@babel/runtime": ^7.8.4
     "@react-native-community/eslint-config": ^1.1.0
-    "@trust/keyto": ^1.0.1
     "@types/crypto-js": ^3.1.47
     "@types/elliptic": ^6.4.12
     "@types/jest": ^25.2.3
@@ -2033,17 +2032,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trust/keyto@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@trust/keyto@npm:1.0.1"
-  dependencies:
-    asn1.js: ^5.2.0
-    base64url: ^3.0.1
-    elliptic: ^6.5.2
-  checksum: 706554c39da08930e9a2d7906aab430081502e43d14e5b98c6c7150dca352d1c537587f0d7c1797087d7530baf8e274fb0fbe0db665dc7aa2e0d4abfb36a8ed7
-  languageName: node
-  linkType: hard
-
 "@types/babel__core@npm:^7.1.7":
   version: 7.1.14
   resolution: "@types/babel__core@npm:7.1.14"
@@ -2785,18 +2773,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1.js@npm:^5.2.0":
-  version: 5.4.1
-  resolution: "asn1.js@npm:5.4.1"
-  dependencies:
-    bn.js: ^4.0.0
-    inherits: ^2.0.1
-    minimalistic-assert: ^1.0.0
-    safer-buffer: ^2.1.0
-  checksum: 4aa368fce1f2213c41016e4d739da9a65a8462d131146109afa9a5527e9071ec550b1b1d2e5b105044b90dc4bd6b6331bfd7a0a5bb12557604ebdfd330a788d0
-  languageName: node
-  linkType: hard
-
 "asn1@npm:~0.2.3":
   version: 0.2.4
   resolution: "asn1@npm:0.2.4"
@@ -3137,7 +3113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bn.js@npm:^4.0.0, bn.js@npm:^4.11.9":
+"bn.js@npm:^4.11.9":
   version: 4.12.0
   resolution: "bn.js@npm:4.12.0"
   checksum: cfe7494de9c8a472c3534418f64f9c30a3f18134a8ad0c3ba4e0e934feb5d1a9110bba049a47ec6b79a1d649467df212f64ba6b22aaccbea0c3c208bef0b4110
@@ -4111,7 +4087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.5.4, elliptic@npm:^6.5.2, elliptic@npm:^6.5.3, elliptic@npm:^6.5.4":
+"elliptic@npm:6.5.4, elliptic@npm:^6.5.3, elliptic@npm:^6.5.4":
   version: 6.5.4
   resolution: "elliptic@npm:6.5.4"
   dependencies:
@@ -5629,7 +5605,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"inherits@npm:2, inherits@npm:2.0.4, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3":
+"inherits@npm:2, inherits@npm:2.0.4, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 98426da247ddfc3dcd7d7daedd90c3ca32d5b08deca08949726f12d49232aef94772a07b36cf4ff833e105ae2ef931777f6de4a6dd8245a216b9299ad4a50bea

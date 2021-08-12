@@ -25,7 +25,6 @@
   "author": "DataSign Inc.",
   "license": "MIT",
   "dependencies": {
-    "@trust/keyto": "^1.0.1",
     "ajv": "^6.5.5",
     "base64url": "^3.0.1",
     "crypto-js": "3.3.0",
