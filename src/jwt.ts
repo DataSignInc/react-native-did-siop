@@ -16,7 +16,7 @@ export const verifyJWT = async (jwt: string, resolver: Resolver) => {
   });
 };
 
-export const calculateJWKThumprint = (jwk: {}) => {
+export const calculateJWKThumbprint = (jwk: {}) => {
   const base64Thumbprint = sha256(JSON.stringify(jwk)).toString(Base64);
   return base64url.fromBase64(base64Thumbprint);
 };

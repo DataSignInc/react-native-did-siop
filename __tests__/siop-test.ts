@@ -20,7 +20,7 @@ describe('siop', () => {
     // @ts-expect-error 2339
     jwtModule.verifyJWT.mockResolvedValue(undefined);
     // @ts-expect-error 2339
-    jwtModule.calculateJWKThumprint.mockReturnValue(
+    jwtModule.calculateJWKThumbprint.mockReturnValue(
       'V9vpz4lj1QW047t29hW28vPsYSgWJnjqPrQoPbt_x0Y',
     );
   });
