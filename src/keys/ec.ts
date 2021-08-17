@@ -1,7 +1,8 @@
 // Elliptic Curve （楕円曲線） Digital Signature Algorithm
 import {createJWS, ES256KSigner} from 'did-jwt';
 import {ec as EC} from 'elliptic';
-
+import {Buffer} from 'buffer';
+import {base64Tobase64url} from './encoding';
 // const curve = 'secp256k1';
 // const ec = new EC(curve);
 
@@ -23,13 +24,16 @@ export class ECKeyPair {
   }
 
   getJWK() {
-    const publicKey = this.keyPair.getPublic('hex');
+    const publicKey = this.keyPair.getPublic();
+    const encodePoint = (point: Buffer) =>
+      base64Tobase64url(point.toString('base64'));
+
     return {
       kty: 'EC',
       crv: 'secp256k1',
-      x: this.keyPair.getPublic().getX(),
-      y: this.keyPair.getPublic().getY(),
-    }
+      x: encodePoint(publicKey.getX().toArrayLike(Buffer)),
+      y: encodePoint(publicKey.getY().toArrayLike(Buffer)),
+    };
   }
 }
 
