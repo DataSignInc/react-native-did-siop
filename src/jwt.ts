@@ -1,8 +1,8 @@
-import base64url from 'base64url';
 import Base64 from 'crypto-js/enc-base64';
 import sha256 from 'crypto-js/sha256';
 import * as didJWT from 'did-jwt';
 import {Resolver} from 'did-resolver';
+import {base64ToBase64url} from './keys/encoding';
 export interface JWTHeader {
   typ: string;
   alg: string;
@@ -18,5 +18,5 @@ export const verifyJWT = async (jwt: string, resolver: Resolver) => {
 
 export const calculateJWKThumbprint = (jwk: {}) => {
   const base64Thumbprint = sha256(JSON.stringify(jwk)).toString(Base64);
-  return base64url.fromBase64(base64Thumbprint);
+  return base64ToBase64url(base64Thumbprint);
 };
