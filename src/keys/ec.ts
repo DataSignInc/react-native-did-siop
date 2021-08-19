@@ -29,8 +29,10 @@ export class ECKeyPair {
       base64ToBase64url(point.toString('base64'));
 
     return {
+      // The kty and crv values are defined here for secp256k1:
+      //   https://datatracker.ietf.org/doc/html/draft-jones-webauthn-secp256k1-00#section-2
       kty: 'EC',
-      crv: 'K-256',
+      crv: 'P-256K',
       // We must specify the length parameter (32) to avoid 00-truncated Buffer instances.
       // Example:
       //   Expected:
