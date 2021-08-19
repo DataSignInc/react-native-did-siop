@@ -1,4 +1,4 @@
-import {calculateJWKThumprint} from './jwt';
+import {calculateJWKThumbprint} from './jwt';
 
 class Persona {
   public did: string;
@@ -15,7 +15,7 @@ class Persona {
 
   getSubjectIdentier() {
     const jwk = this.getMinimalJWK();
-    return calculateJWKThumprint(jwk);
+    return calculateJWKThumbprint(jwk);
   }
 
   async sign(payload: any) {

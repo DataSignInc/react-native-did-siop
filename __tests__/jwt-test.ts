@@ -15,7 +15,7 @@ describe('jwt', () => {
       x: 'rT61nvuz2LCRzx4W1EfEwGAiVgCuN6aKTW-PZ46qD1E',
       y: 'ABGl1Pr6v7nVwvaa1g14m5M7oGgqs23Fpf780x-VJpM',
     };
-    expect(JWT.calculateJWKThumprint(minimalJwk)).toBe(
+    expect(JWT.calculateJWKThumbprint(minimalJwk)).toBe(
       'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4',
     );
   });
