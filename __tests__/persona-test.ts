@@ -19,7 +19,7 @@ describe('persona', () => {
   test('getMinimalJWK', async () => {
     const expected = {
       kty: 'EC',
-      crv: 'K-256',
+      crv: 'P-256K',
       x: 'rT61nvuz2LCRzx4W1EfEwGAiVgCuN6aKTW-PZ46qD1E',
       y: 'ABGl1Pr6v7nVwvaa1g14m5M7oGgqs23Fpf780x-VJpM',
     };
@@ -27,7 +27,7 @@ describe('persona', () => {
   });
 
   test('getSubjectIdentier()', async () => {
-    const expected = 'UCKoaM6I76JIu46bGUaCfMSnQwMUIuKmoRF0bnYzLd4';
+    const expected = 'dN-6gi0j9CipfcFlPYP76f7ypK-l3_svrVRc3IKjImA';
     expect(persona.getSubjectIdentier()).toBe(expected);
   });
 });
