@@ -72,8 +72,14 @@ export class SIOPRequestValidationError extends SIOPError {
   public invalidField?: string;
   public invalidValue?: any;
 
-  constructor(error: ErrorCode, invalidField?: string, invalidValue?: any) {
-    super(error);
+  constructor(
+    error: ErrorCode,
+    clientId?: string,
+    state?: string,
+    invalidField?: string,
+    invalidValue?: any,
+  ) {
+    super(error, clientId, state);
     this.invalidField = invalidField;
     this.invalidValue = invalidValue;
   }

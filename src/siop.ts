@@ -27,8 +27,6 @@ export default class Provider {
       return this._receiveRequest(paramsOrUrl);
     } catch (error) {
       if (error instanceof SIOPError) {
-        error.setClientId(this.clientId);
-        error.setState(this.state);
         throw error;
       } else {
         throw new SIOPRequestValidationError(error, this.clientId, this.state);
@@ -42,11 +40,18 @@ export default class Provider {
         ? parseSIOPRequestUri(paramsOrUrl)
         : paramsOrUrl;
 
-    const validator = new SIOPValidator(this.resolver);
+    // @ts-expect-error ts(2339)
+    this.clientId = params.clientId;
+    // @ts-expect-error ts(2339)
+    this.state = params.state;
+
+    const validator = new SIOPValidator(
+      this.resolver,
+      this.clientId,
+      this.state,
+    );
     const {requestObject} = await validator.validateSIOPRequest(params);
     this.requestObject = requestObject;
-    this.state = requestObject.state;
-    this.clientId = requestObject.client_id;
     return requestObject.client_id;
   }
   public async generateIDToken(

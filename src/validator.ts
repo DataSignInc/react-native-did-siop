@@ -7,8 +7,13 @@ import {Registration, Request, RequestObject} from './siop-schema';
 import {getRegistration, getJwks, getRequestObject} from './sioputils';
 export default class SIOPValidator {
   private resolver: Resolver;
-  constructor(resolver: Resolver) {
+  private clientId?: string;
+  private state?: string;
+
+  constructor(resolver: Resolver, clientId?: string, state?: string) {
     this.resolver = resolver;
+    this.clientId = clientId;
+    this.state = state;
   }
   async validateSIOPRequest(request: any) {
     // validate paramters
@@ -39,7 +44,12 @@ export default class SIOPValidator {
     } catch (error) {
       console.error('JWT verification failed');
       console.error(error);
-      throw new SIOPRequestValidationError('invalid_request', 'jwt signature');
+      throw new SIOPRequestValidationError(
+        'invalid_request',
+        this.clientId,
+        this.state,
+        'jwt signature',
+      );
     }
   }
 
@@ -64,6 +74,8 @@ export default class SIOPValidator {
     if (!request.scope.includes('did_authn')) {
       throw new SIOPRequestValidationError(
         'invalid_scope',
+        this.clientId,
+        this.state,
         'scope',
         request.scope,
       );
@@ -75,7 +87,7 @@ export default class SIOPValidator {
     // if (registration.jwks_uri) {
     //   if (jwskContains(registration.jwks, request.iss)) {
     //     // if (registration.jwks_uri !== request.iss) {
-    //     throw new SIOPRequestValidationError('invalid_request_object');
+    //     throw new SIOPRequestValidationError('invalid_request_object', this.clientId, this.state);
     //   }
     // }
 
@@ -94,6 +106,8 @@ export default class SIOPValidator {
       );
       throw new SIOPRequestValidationError(
         'invalid_request',
+        this.clientId,
+        this.state,
         'kid',
         request.kid,
       );
@@ -136,14 +150,28 @@ export default class SIOPValidator {
       // this SIOP request asks me not to authentication but to just register RP meta data.
       // In this case params MUST contain registration or registration_uri params.
       if (!params.registration && !params.registration_uri) {
-        throw new SIOPRequestValidationError('invalid_request', 'registration');
+        throw new SIOPRequestValidationError(
+          'invalid_request',
+          this.clientId,
+          this.state,
+          'registration',
+        );
       } else {
         // TODO: implement registration only flow.
-        throw new SIOPRequestValidationError('registration_not_supported');
+        throw new SIOPRequestValidationError(
+          'registration_not_supported',
+          this.clientId,
+          this.state,
+        );
       }
     }
     if (!containsAllRequiredParameters) {
-      throw new SIOPRequestValidationError('invalid_request', 'requiredFields');
+      throw new SIOPRequestValidationError(
+        'invalid_request',
+        this.clientId,
+        this.state,
+        'requiredFields',
+      );
     }
 
     this.validateScope(params.scope);
@@ -170,6 +198,8 @@ export default class SIOPValidator {
     if (!request.client_id || !requestObject.client_id) {
       throw new SIOPRequestValidationError(
         'invalid_request_object',
+        undefined,
+        undefined,
         'client_id',
         null,
       );
@@ -177,6 +207,8 @@ export default class SIOPValidator {
     if (request.client_id !== requestObject.client_id) {
       throw new SIOPRequestValidationError(
         'invalid_request_object',
+        undefined,
+        undefined,
         'client_id',
         requestObject.client_id,
       );
@@ -188,6 +220,8 @@ export default class SIOPValidator {
       } else {
         throw new SIOPRequestValidationError(
           'invalid_request_object',
+          undefined,
+          undefined,
           'client_id',
           client_id,
         );
@@ -199,6 +233,8 @@ export default class SIOPValidator {
     if (!response_type) {
       throw new SIOPRequestValidationError(
         'invalid_request',
+        this.clientId,
+        this.state,
         'response_type',
         response_type,
       );
@@ -206,7 +242,9 @@ export default class SIOPValidator {
     if (response_type !== 'id_token') {
       throw new SIOPRequestValidationError(
         'unsupported_response_type',
-        undefined,
+        this.clientId,
+        this.state,
+        'response_type',
         response_type,
       );
     }
@@ -216,6 +254,8 @@ export default class SIOPValidator {
     if (!iss) {
       throw new SIOPRequestValidationError(
         'invalid_request_object',
+        this.clientId,
+        this.state,
         'iss',
         null,
       );
@@ -224,6 +264,8 @@ export default class SIOPValidator {
       if (iss !== registration.did) {
         throw new SIOPRequestValidationError(
           'invalid_request_object',
+          this.clientId,
+          this.state,
           'iss',
           iss,
         );
@@ -235,13 +277,25 @@ export default class SIOPValidator {
 
   validateScope(scope?: string) {
     if (!scope) {
-      throw new SIOPRequestValidationError('invalid_scope', 'scope', scope);
+      throw new SIOPRequestValidationError(
+        'invalid_scope',
+        this.clientId,
+        this.state,
+        'scope',
+        scope,
+      );
     }
     const scopeArray = scope.split(' ');
     const isScopeValid =
       scopeArray.includes('openid') && scopeArray.includes('did_authn');
     if (!isScopeValid) {
-      throw new SIOPRequestValidationError('invalid_scope', 'scope', scope);
+      throw new SIOPRequestValidationError(
+        'invalid_scope',
+        this.clientId,
+        this.state,
+        'scope',
+        scope,
+      );
     }
   }
 
@@ -249,7 +303,7 @@ export default class SIOPValidator {
     // Equality check between kid and JWTHeader.kid (and subsequent verification steps) are done at did authn verification phase.
     // TODO understanding JWSK data structure
     // if (jwks && !jwks.includes(kid)) {
-    //   throw new SIOPRequestValidationError('invalid_request_object');
+    //   throw new SIOPRequestValidationError('invalid_request_object', this.clientId, this.state);
     // } else {
     //   return;
     // }
