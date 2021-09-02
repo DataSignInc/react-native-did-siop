@@ -14,6 +14,9 @@ export default class Provider {
   private expiresIn: number;
   private requestObject: any;
   private resolver: Resolver;
+  private clientId?: string;
+  private state?: string;
+
   constructor(expiresIn: number, resolver: Resolver) {
     this.expiresIn = expiresIn;
     this.resolver = resolver;
@@ -24,9 +27,11 @@ export default class Provider {
       return this._receiveRequest(paramsOrUrl);
     } catch (error) {
       if (error instanceof SIOPError) {
+        error.setClientId(this.clientId);
+        error.setState(this.state);
         throw error;
       } else {
-        throw new SIOPRequestValidationError(error);
+        throw new SIOPRequestValidationError(error, this.clientId, this.state);
       }
     }
   }
@@ -40,6 +45,8 @@ export default class Provider {
     const validator = new SIOPValidator(this.resolver);
     const {requestObject} = await validator.validateSIOPRequest(params);
     this.requestObject = requestObject;
+    this.state = requestObject.state;
+    this.clientId = requestObject.client_id;
     return requestObject.client_id;
   }
   public async generateIDToken(
@@ -76,7 +83,7 @@ export default class Provider {
       const location = `${request.client_id}#id_token=${idToken}`;
       return location;
     } catch (error) {
-      throw new SIOPResponseGenerationError(error);
+      throw new SIOPResponseGenerationError(error, this.clientId, this.state);
     }
   }
 }
