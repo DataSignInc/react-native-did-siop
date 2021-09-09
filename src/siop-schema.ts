@@ -72,6 +72,8 @@ export declare interface Request {
   request: string;
   request_uri?: string;
   // example value: request_uri=https%3A%2F%2Frp.example.com%2F90ce0b8a-a910-4dd0
+  state?: string;
+  nonce?: string;
 }
 
 // https://openid.net/specs/openid-connect-core-1_0.html#RequestObject

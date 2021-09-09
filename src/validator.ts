@@ -33,7 +33,11 @@ export default class SIOPValidator {
 
     return {
       request: request as Request,
-      requestObject: requestObject as RequestObject,
+      requestObject: {
+        nonce: request.nonce,
+        state: request.state,
+        ...requestObject,
+      } as RequestObject,
     };
   }
 
