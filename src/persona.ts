@@ -1,4 +1,5 @@
 import {calculateJWKThumbprint} from './jwt';
+import {createJWS} from 'did-jwt';
 
 abstract class Persona {
   public did: string;
@@ -32,12 +33,31 @@ export class PersonaWithECKey extends Persona {
 }
 
 export class PersonaWithoutKey extends Persona {
-  private signFunction: (payload: string) => string;
+  private signFunction: (data: string | Uint8Array) => Promise<string>;
+  private signAlgorithm: string;
   private minimalJwk: any;
+  private kid: string;
 
-  constructor(did: string, sign: any, minimalJwk: any) {
+  /**
+   *  Create a Persona instance without actual value of secret keys.
+   *
+   *  @param    {string}            did            did
+   *  @param    {string}            kid            kid which will be included in minimal jwk's and JWT headers
+   *  @param    {(data: string | Uint8Array) => Promise<string>} sign a function to sign data
+   *  @param    {string}            signAlgorithm                     algorithm used by the sign function. Included in JWT headers
+   *  @param    {any}               minimalJwk                        minimalJwk which will be included in id tokens as `sub_jwk` claim
+   */
+  constructor(
+    did: string,
+    kid: string,
+    sign: (data: string | Uint8Array) => Promise<string>,
+    signAlgorithm: string,
+    minimalJwk: any,
+  ) {
     super(did);
+    this.kid = kid;
     this.signFunction = sign;
+    this.signAlgorithm = signAlgorithm;
     this.minimalJwk = minimalJwk;
   }
 
@@ -46,7 +66,11 @@ export class PersonaWithoutKey extends Persona {
   }
 
   async sign(payload: any) {
-    return this.signFunction(payload);
+    return await createJWS(payload, this.signFunction, {
+      alg: this.signAlgorithm,
+      typ: 'JWT',
+      kid: this.kid,
+    });
   }
 }
 

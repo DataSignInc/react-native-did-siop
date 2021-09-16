@@ -10,6 +10,7 @@ import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
 import {ECKeyPair} from './keys/ec';
 import {ec as EC} from 'elliptic';
 import {Resolver} from 'did-resolver';
+
 export default class Provider {
   private expiresIn: number;
   private requestObject: any;
@@ -79,12 +80,31 @@ export default class Provider {
 
   async generateResponse(
     did: string,
-    keyPair: EC.KeyPair | {sign: any; minimalJwk: any},
+    keyPair:
+      | EC.KeyPair
+      | {
+          kid: string;
+          sign: (data: string | Uint8Array) => Promise<string>;
+          signAlgorithm: string;
+          minimalJwk: any;
+        },
     vp?: any,
   ) {
     let persona: Persona;
-    if ('sign' in keyPair && 'minimalJwk' in keyPair) {
-      persona = new PersonaWithoutKey(did, keyPair.sign, keyPair.minimalJwk);
+    if (
+      'sign' in keyPair &&
+      'minimalJwk' in keyPair &&
+      'signAlgorithm' in keyPair &&
+      'kid' in keyPair
+    ) {
+      const {sign, signAlgorithm, minimalJwk, kid} = keyPair;
+      persona = new PersonaWithoutKey(
+        did,
+        kid,
+        sign,
+        signAlgorithm,
+        minimalJwk,
+      );
     } else {
       persona = new PersonaWithECKey(did, new ECKeyPair(keyPair));
     }
