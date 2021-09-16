@@ -1,11 +1,24 @@
 import {calculateJWKThumbprint} from './jwt';
 
-class Persona {
+abstract class Persona {
   public did: string;
+
+  constructor(did: string) {
+    this.did = did;
+  }
+  abstract getMinimalJWK(): any;
+  getSubjectIdentifier() {
+    const jwk = this.getMinimalJWK();
+    return calculateJWKThumbprint(jwk);
+  }
+  abstract sign(payload: any): any;
+}
+
+export class PersonaWithECKey extends Persona {
   private keyPair: any;
 
   constructor(did: string, keyPair: any) {
-    this.did = did;
+    super(did);
     this.keyPair = keyPair;
   }
 
@@ -13,13 +26,27 @@ class Persona {
     return this.keyPair.getJWK();
   }
 
-  getSubjectIdentier() {
-    const jwk = this.getMinimalJWK();
-    return calculateJWKThumbprint(jwk);
+  async sign(payload: any) {
+    return this.keyPair.sign(payload, this.did);
+  }
+}
+
+export class PersonaWithoutKey extends Persona {
+  private signFunction: (payload: string) => string;
+  private minimalJwk: any;
+
+  constructor(did: string, sign: any, minimalJwk: any) {
+    super(did);
+    this.signFunction = sign;
+    this.minimalJwk = minimalJwk;
+  }
+
+  getMinimalJWK() {
+    return this.minimalJwk;
   }
 
   async sign(payload: any) {
-    return this.keyPair.sign(payload, this.did);
+    return this.signFunction(payload);
   }
 }
 

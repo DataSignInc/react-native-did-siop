@@ -1,7 +1,7 @@
 import fetchMock from 'jest-fetch-mock';
 
 import {ECKeyPair} from '../src/keys/ec';
-import Persona from '../src/persona';
+import {PersonaWithECKey} from '../src/persona';
 import Provider from '../src/siop';
 import * as consts from './consts';
 
@@ -27,7 +27,7 @@ describe('siop', () => {
   const expectedIDToken =
     'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciJ9.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVjl2cHo0bGoxUVcwNDd0MjloVzI4dlBzWVNnV0puanFQclFvUGJ0X3gwWSIsImRpZCI6ImRpZDpzdHViOnVzZXItMSIsImF1ZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTZLIiwieCI6IkNYZzZoNUtoa3JrY2ZIWkNIVzNVMmRWaTUta0NJRE9haTVEQUozZnI2MVkiLCJ5IjoiNmJYRWRCcU1sQTVZdlZkY3NVUDlIZ1Nvd3lMMGVIeF9MNTFDT2g5VzJ6USJ9fQ._VL3g6H49Ym7doVnlq8tz8JmvDzbZ7YCr-GSVR_mFlEDglVvafz4HGlFr51KtmymQcGHacqbqvNW9VrrDn173w';
 
-  const persona = new Persona(
+  const persona = new PersonaWithECKey(
     'did:stub:user-1',
     new ECKeyPair(consts.sekp256k1KeyOfUser1),
   );

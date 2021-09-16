@@ -5,7 +5,7 @@ import {
   SIOPRequestValidationError,
   SIOPResponseGenerationError,
 } from './error';
-import Persona from './persona';
+import Persona, {PersonaWithECKey, PersonaWithoutKey} from './persona';
 import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
 import {ECKeyPair} from './keys/ec';
 import {ec as EC} from 'elliptic';
@@ -62,7 +62,7 @@ export default class Provider {
     const issuedAt = getIssuedAt();
     const idToken: IDToken = {
       iss: 'https://self-issued.me',
-      sub: persona.getSubjectIdentier(),
+      sub: persona.getSubjectIdentifier(),
       did: persona.did,
       aud: request.client_id,
       iat: issuedAt,
@@ -77,9 +77,19 @@ export default class Provider {
     return jws;
   }
 
-  async generateResponse(did: string, keyPair: EC.KeyPair, vp?: any) {
+  async generateResponse(
+    did: string,
+    keyPair: EC.KeyPair | {sign: any; minimalJwk: any},
+    vp?: any,
+  ) {
+    let persona: Persona;
+    if ('sign' in keyPair && 'minimalJwk' in keyPair) {
+      persona = new PersonaWithoutKey(did, keyPair.sign, keyPair.minimalJwk);
+    } else {
+      persona = new PersonaWithECKey(did, new ECKeyPair(keyPair));
+    }
+
     try {
-      const persona = new Persona(did, new ECKeyPair(keyPair));
       const request: RequestObject = this.requestObject;
       const idToken = await this.generateIDToken(request, persona, vp);
       // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.

@@ -1,4 +1,4 @@
-import Persona from '../src/persona';
+import {PersonaWithECKey} from '../src/persona';
 import {ec as EC} from 'elliptic';
 import {ECKeyPair} from '../src/keys/ec';
 
@@ -8,7 +8,7 @@ describe('persona', () => {
   const privateKeyHex =
     '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
   const key = ec.keyFromPrivate(privateKeyHex);
-  const persona = new Persona('did:example:ab', new ECKeyPair(key));
+  const persona = new PersonaWithECKey('did:example:ab', new ECKeyPair(key));
 
   test('sign', async () => {
     const expected =
@@ -26,8 +26,8 @@ describe('persona', () => {
     expect(persona.getMinimalJWK()).toStrictEqual(expected);
   });
 
-  test('getSubjectIdentier()', async () => {
+  test('getSubjectIdentifier()', async () => {
     const expected = 'dN-6gi0j9CipfcFlPYP76f7ypK-l3_svrVRc3IKjImA';
-    expect(persona.getSubjectIdentier()).toBe(expected);
+    expect(persona.getSubjectIdentifier()).toBe(expected);
   });
 });
