@@ -8,7 +8,10 @@ import validateRegistration, {
 
 export const getIssuedAt = () => Math.floor(Date.now() / 1000);
 
-export const parseSIOPRequestUri = (uri: string) => queryString.parse(uri);
+export const parseSIOPRequestUri = (uri: string) => {
+  const queryPart = uri.split('?', 2)[1];
+  return queryString.parse('?' + queryPart);
+};
 
 const resolveUriParameter = async (
   something?: any,

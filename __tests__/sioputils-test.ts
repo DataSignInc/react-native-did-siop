@@ -8,6 +8,26 @@ import {SIOPRequestValidationError} from '../src/error';
 
 fetchMock.enableMocks();
 
+describe('sioputils without fetch()', () => {
+  test('parseSIOPRequestUri()', async () => {
+    const uri =
+      'https://self-issued.me/?response_type=id_token&scope=openid%20did_authn&client_id=https%3A%2F%2Fs3.ap-northeast-1.amazonaws.com%2Fstatic.did-siop.develop.bunsin.io%2Frp%2Fspa-03411718b2%2Fhome.html&request_uri=https%3A%2F%2Fs3.ap-northeast-1.amazonaws.com%2Fstatic.did-siop.develop.bunsin.io%2Frp%2Fspa-03411718b2%2Frequest.jwt&nonce=ciW2oFlUI2bR&state=QvtD6GZgaPya';
+
+    const expected = {
+      response_type: 'id_token',
+      scope: 'openid did_authn',
+      client_id:
+        'https://s3.ap-northeast-1.amazonaws.com/static.did-siop.develop.bunsin.io/rp/spa-03411718b2/home.html',
+      request_uri:
+        'https://s3.ap-northeast-1.amazonaws.com/static.did-siop.develop.bunsin.io/rp/spa-03411718b2/request.jwt',
+      nonce: 'ciW2oFlUI2bR',
+      state: 'QvtD6GZgaPya',
+    };
+    const parsed = utils.parseSIOPRequestUri(uri);
+    expect(parsed).toMatchObject(expected);
+  });
+});
+
 describe('sioputils', () => {
   const jwt = 'ey...';
 
