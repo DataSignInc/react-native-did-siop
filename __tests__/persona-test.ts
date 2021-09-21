@@ -1,6 +1,6 @@
 import {PersonaWithECKey, PersonaWithoutKey} from '../src/persona';
 import {ec as EC} from 'elliptic';
-import {ES256KSigner} from 'did-jwt';
+import {EdDSASigner, ES256KSigner} from 'did-jwt';
 import {ECKeyPair} from '../src/keys/ec';
 
 const ec = new EC('secp256k1');
@@ -61,6 +61,39 @@ describe('PersonaWithoutKey', () => {
   test('sign()', async () => {
     const expected =
       'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIn0.eyJzYW1wbGUiOiJkYXRhIn0.52KfBvotjTPvbZl0Ez_pL__X_9Dqkv_zbn0lBGhnlQZQ_JGQcYbpQhSG_T0g07-NXrLd6lMld8hp2-n1HtKP3A';
+    await expect(persona.sign({sample: 'data'})).resolves.toBe(expected);
+  });
+});
+
+describe('Ed25519PersonaWithoutKey', () => {
+  const privateKeyHex =
+    '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f67109702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
+
+  const persona = new PersonaWithoutKey(
+    'did:example:ab',
+    'did:example:ab#controller',
+    EdDSASigner(privateKeyHex) as (
+      data: string | Uint8Array,
+    ) => Promise<string>,
+    'EdDSA',
+    // https://datatracker.ietf.org/doc/html/rfc8037
+    {
+      kty: 'OKP',
+      crv: 'Ed25519',
+      // base64url-encoded public key.
+      x: 'THP2m9FHt3YXeQTSNeJBtJq3HVL7E9L7-pmuSJCqMkg',
+    },
+  );
+
+  test('getSubjectIdentifier()', () => {
+    expect(persona.getSubjectIdentifier()).toBe(
+      'kHXAhmYGbPv38WZnzsaw9nKmS6PS_JG3eIokgGUK_FY',
+    );
+  });
+
+  test('sign()', async () => {
+    const expected =
+      'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCIsImtpZCI6ImRpZDpleGFtcGxlOmFiI2NvbnRyb2xsZXIifQ.eyJzYW1wbGUiOiJkYXRhIn0.b35qldVJvGoWuHfA8TG1phKWCkmE41EFrbflbOTnp2umi7iksCc4oDSaiB0g3dbMSnN1UuPfTajlqVadQialBg';
     await expect(persona.sign({sample: 'data'})).resolves.toBe(expected);
   });
 });
