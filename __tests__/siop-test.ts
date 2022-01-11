@@ -77,6 +77,39 @@ describe('siop', () => {
     ).resolves.toBe(expectedIDToken);
   });
 
+  test('generate ID Token with additionalFields', async () => {
+    const provider = new Provider(expiresIn, consts.defaultResolver);
+    // mock the sign() method
+    persona.sign = (payload: any) => payload;
+
+    // @ts-expect-error 2322
+    utils.getIssuedAt.mockReturnValueOnce(1616669045);
+    await expect(
+      provider.generateIDToken(consts.requestObject, persona, {
+        test: 'test',
+        test2: 2,
+        iss: 'invalid',
+      }),
+    ).resolves.toMatchObject({
+      aud: 'https://example.com/home',
+      did: 'did:stub:user-1',
+      exp: 1616672645,
+      iat: 1616669045,
+      iss: 'https://self-issued.me',
+      nonce: undefined,
+      state: undefined,
+      sub: 'V9vpz4lj1QW047t29hW28vPsYSgWJnjqPrQoPbt_x0Y',
+      sub_jwk: {
+        crv: 'P-256K',
+        kty: 'EC',
+        x: 'CXg6h5KhkrkcfHZCHW3U2dVi5-kCIDOai5DAJ3fr61Y',
+        y: '6bXEdBqMlA5YvVdcsUP9HgSowyL0eHx_L51COh9W2zQ',
+      },
+      test: 'test',
+      test2: 2,
+    });
+  });
+
   test('generate response', async () => {
     const provider = new Provider(expiresIn, consts.defaultResolver);
     // @ts-expect-error 2322
