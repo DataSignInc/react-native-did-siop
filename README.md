@@ -45,8 +45,8 @@ import {getResolver as getWebResolver} from 'web-did-resolver';
               else if (error instanceof SIOPResponseGenerationError) {
                   console.error(error)
               }
-            //   location = error.toResponse();  // we'll implement it in near future!
-            //   await Linking.openURL(location);
+              location = error.toResponse();
+              await Linking.openURL(location);
           }
         }
 ```
