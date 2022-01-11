@@ -58,7 +58,7 @@ export default class Provider {
   public async generateIDToken(
     request: RequestObject,
     persona: Persona,
-    vp?: any,
+    additionalFields?: any,
   ) {
     const issuedAt = getIssuedAt();
     const idToken: IDToken = {
@@ -70,11 +70,12 @@ export default class Provider {
       exp: issuedAt + this.expiresIn,
       nonce: request.nonce,
       state: request.state,
-      vp: vp,
       sub_jwk: persona.getMinimalJWK(),
     };
-
-    const jws = await persona.sign(idToken);
+    // We place `...` operators in this order to prevent the fields of `additionalFields`
+    // from overriding that of `idToken`.
+    const idTokenWithAdditionalFields = {...additionalFields, ...idToken};
+    const jws = await persona.sign(idTokenWithAdditionalFields);
     return jws;
   }
 
@@ -88,7 +89,7 @@ export default class Provider {
           signAlgorithm: string;
           minimalJwk: any;
         },
-    vp?: any,
+    additionalFields?: any,
   ) {
     let persona: Persona;
     if (
@@ -111,7 +112,11 @@ export default class Provider {
 
     try {
       const request: RequestObject = this.requestObject;
-      const idToken = await this.generateIDToken(request, persona, vp);
+      const idToken = await this.generateIDToken(
+        request,
+        persona,
+        additionalFields,
+      );
       // No Access Token is returned for accessing a UserInfo Endpoint, so all Claims returned MUST be in the ID Token.
       // refer: https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
       // Is `state` not needed neither?
