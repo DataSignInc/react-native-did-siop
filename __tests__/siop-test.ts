@@ -40,9 +40,9 @@ describe('siop', () => {
     const provider = new Provider(expiresIn, consts.defaultResolver);
     // @ts-expect-error 2339
     utils.getRequestObject.mockReturnValueOnce(consts.requestJWT);
-    await expect(provider.receiveRequest(consts.request)).resolves.toBe(
-      consts.client_id,
-    );
+    await expect(
+      provider.receiveRequest(consts.request),
+    ).resolves.toMatchObject({client_id: consts.client_id});
   });
 
   test('receiveRequest() accepts request_uri', async () => {
@@ -52,9 +52,9 @@ describe('siop', () => {
     const request = {request_uri: 'https://example.com', ...consts.request};
     request.request = undefined;
 
-    await expect(provider.receiveRequest(consts.request)).resolves.toBe(
-      consts.client_id,
-    );
+    await expect(
+      provider.receiveRequest(consts.request),
+    ).resolves.toMatchObject({client_id: consts.client_id});
   });
 
   test('receiveRequest() raises errors on validation failure', async () => {

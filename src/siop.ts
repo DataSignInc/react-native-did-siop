@@ -52,8 +52,9 @@ export default class Provider {
       this.state,
     );
     const {requestObject} = await validator.validateSIOPRequest(params);
-    this.requestObject = requestObject;
-    return requestObject.client_id;
+    // Deep-copy requestObject to this.requestObject to allow the caller to edit the return value.
+    this.requestObject = JSON.parse(JSON.stringify(requestObject));
+    return requestObject;
   }
   public async generateIDToken(
     request: RequestObject,
