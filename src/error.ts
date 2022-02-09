@@ -45,10 +45,9 @@ export class SIOPError extends Error {
     ];
 
     const siopCode = [
-      'did_methods_not_supported',
-      'subject_identifier_types_not_supported',
-      'credential_formats_not_supported',
-      'value_not_supported',
+      'user_cancelled',
+      'registration_value_not_supported',
+      'subject_syntax_types_not_supported',
       'invalid_registration_uri',
       'invalid_registration_object',
     ];
@@ -61,7 +60,8 @@ export class SIOPError extends Error {
         'https://openid.net/specs/openid-connect-core-1_0.html#AuthError';
     } else if (siopCode.includes(this.error)) {
       // still in draft
-      params.error_uri = '';
+      params.error_uri =
+        'https://openid.net/specs/openid-connect-self-issued-v2-1_0.html#name-self-issued-openid-provider-e';
     }
     const qs = queryString.stringify(params);
     return `${this.clientId}#${qs}`;
