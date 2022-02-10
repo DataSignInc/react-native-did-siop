@@ -1,9 +1,11 @@
 # react-native-did-siop
 
+Yet another SIOP library! Our primary focus is to provide the DID/VC ~~cult~~ community with the _provider_ feature with clean and universal APIs. It runs great on browser environments as well as on mobile devices despite its name.
+
 ## Targeting Specifications
 
-- https://identity.foundation/did-siop/
-- https://bitbucket.org/openid/connect/src/master/openid-connect-self-issued-v2-1_0.md
+- https://identity.foundation/did-siop/ (deprecated)
+- https://openid.net/specs/openid-connect-self-issued-v2-1_0.html (still in draft)
 
 ## Install
 
@@ -59,4 +61,4 @@ import {getResolver as getWebResolver} from 'web-did-resolver';
 - Some parameter validations are omitted. These are:
   - Asserting `jwks` in `registration` parameter contains `iss` in request objects.
   - Additional did authn verification when `kid`s in request object and jwt header are different.
-- Protocol negotiation based on the `registration` parameter is skipped. Its future support will not change the API of the library because it doesn’t add extra network communication.New Markdown file
+- Protocol negotiation based on the `registration` parameter is skipped.
