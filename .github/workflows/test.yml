@@ -23,4 +23,10 @@ jobs:
         run: yarn install
 
       - name: run test suite
-        run: yarn test --coverage
+        run: yarn test:ci
+
+      - name: upload coverage report to codecov
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          directory: coverage/
+          

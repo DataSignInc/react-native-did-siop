@@ -11,7 +11,8 @@
     "watch": "tsc --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "generate-json-schema": "npx typescript-json-validator src/siop-schema.d.ts Registration",
-    "ajv:compile": "ajv compile -s src/registration.json -o src/ajv-schemas/registration.js"
+    "ajv:compile": "ajv compile -s src/registration.json -o src/ajv-schemas/registration.js",
+    "test:ci": "yarn test --coverage --coverageReporters json --coverageDirectory coverage/"
   },
   "keywords": [
     "Self_Severign_Identity",
