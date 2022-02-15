@@ -4,8 +4,8 @@ name: testing with jest
 
 on:
   push:
-    paths:
-      - "!README.md"
+    paths-ignore:
+      - "README.md"
   pull_request:
 
 jobs:
