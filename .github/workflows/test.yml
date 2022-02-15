@@ -26,7 +26,7 @@ jobs:
         run: yarn test:ci
 
       - name: upload coverage report to codecov
-        run: 
-          - curl -Os https://uploader.codecov.io/latest/linux/codecov
-          - chmod +x codecov
-          - ./codecov
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          directory: coverage/
+          
