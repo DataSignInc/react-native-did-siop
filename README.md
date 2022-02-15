@@ -1,5 +1,7 @@
 # react-native-did-siop
 
+[![codecov](https://codecov.io/gh/DataSignInc/react-native-did-siop/branch/main/graph/badge.svg?token=0NP95CEWE8)](https://codecov.io/gh/DataSignInc/react-native-did-siop)
+
 Yet another SIOP library! Our primary focus is to provide the DID/VC ~~cult~~ community with the _provider_ feature with clean and universal APIs. It runs great on browser environments as well as on mobile devices despite its name.
 
 ## Targeting Specifications
