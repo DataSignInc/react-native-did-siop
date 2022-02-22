@@ -1,0 +1,3 @@
+ignore:
+  - "src/ajv-schemas/**"  # We generate files in this directory from type declarations
+  - "__tests__/**"
