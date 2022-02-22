@@ -10,5 +10,9 @@ updates:
     schedule:
       interval: "daily"
     ignore:
+      # crypto-js v4.x.x doesn't support the react native environment.
       - dependency-name: "crypto-js"
       - dependency-name: "@types/crypto-js"
+      # typescript-json-validator only work with the current version of ajv.
+      - dependency-name: "ajv"
+      - dependency-name: "ajv-cli"
