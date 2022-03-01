@@ -5,6 +5,10 @@
   "description": "A React Native library for did-siop v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities). Only including Provider funcionality.",
   "main": "./dist/index.js",
   "react-native": "dist/index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/",
+    "access": "public"
+  },
   "scripts": {
     "test": "jest",
     "build": "tsc",
