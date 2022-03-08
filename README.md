@@ -32,7 +32,7 @@ import {getResolver as getWebResolver} from 'web-did-resolver';
           const provider = new Provider(idTokenExpiresIn, resolver);
           // Parse and validate the SIOP request coming from RP.
           // You can also pass a parameter parsed by react-navigation.
-          const clientId = await provider.receiveRequest(siopRequest);
+          const {clientId, iss, kid} = await provider.receiveRequest(siopRequest);
 
           // Generate a SIOP response.
           // You can choose your personas based on the `clientId` returned above.
@@ -47,16 +47,16 @@ import {getResolver as getWebResolver} from 'web-did-resolver';
         } catch (error) {
           if (error instanceof SIOPError) {
               if (error instanceof SIOPRequestValidationError) {
-                  // `error` is throwed at `receiveRequest()` in this case.
+                  // `error` was throwed at `receiveRequest()` in this case.
                   console.error(error.error)
                   console.error(error.invalidField)
                   console.error(error.invalidValue)
               }
               else if (error instanceof SIOPResponseGenerationError) {
-                  // `error` is throwed at `generateResponse()`.
+                  // `error` was throwed at `generateResponse()`.
                   console.error(error)
               }
-              // Generate a redirect url able to be used as a error response to the RP.
+              // Generate a redirect url to use as the error response to the RP.
               location = error.toResponse();
               await Linking.openURL(location);
           }
@@ -67,7 +67,6 @@ import {getResolver as getWebResolver} from 'web-did-resolver';
 
 - We do not support JWE both for ID tokens and SIOP requests.
 - Currently we only support `secp256k1` ECC keys. RP can use other types of keys.
-- You need to choose personas based solely on the `client_id` of RP. Other parameters from RP are handled internally and kept private in this library.
 - Some parameter validations are omitted. These are:
   - Asserting `jwks` in `registration` parameter contains `iss` in request objects.
   - Additional did authn verification when `kid`s in request object and jwt header are different.
