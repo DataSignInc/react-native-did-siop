@@ -1,6 +1,6 @@
 {
   "name": "@datasign/siop",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "repository": "git://github.com/DataSignInc/react-native-did-siop.git",
   "description": "A cross-platform library for OIDC SIOP v2 (OpenID Connect Self-Issued Identity Provider for Decentralized Identities).",
   "main": "./dist/index.js",
