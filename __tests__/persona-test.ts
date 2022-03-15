@@ -60,14 +60,14 @@ describe('PersonaWithoutKey', () => {
 
   test('sign()', async () => {
     const expected =
-      'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIn0.eyJzYW1wbGUiOiJkYXRhIn0.52KfBvotjTPvbZl0Ez_pL__X_9Dqkv_zbn0lBGhnlQZQ_JGQcYbpQhSG_T0g07-NXrLd6lMld8hp2-n1HtKP3A';
+      'eyJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIiwidHlwIjoiSldUIn0.eyJzYW1wbGUiOiJkYXRhIn0.8OQo-3CMWOqrZY8eFPk9j-IlJzo7tLnUk8lwVnMs0O_s6Y_NcBSv1R2mvK0-1NnhiHZPzLLtcN1lGOQRvdI1Eg';
     await expect(persona.sign({sample: 'data'})).resolves.toBe(expected);
   });
 });
 
 describe('Ed25519PersonaWithoutKey', () => {
   const privateKeyHex =
-    '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f67109702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
+    '9eV2fPFTMZUXYw8iaHa4bIFgzFg7wBN0TGvyVfXMDuUngRf8FExyNA9n0PIxboOGzv+/KyQoycUf73xZfx1Cbg==';
 
   const persona = new PersonaWithoutKey(
     'did:example:ab',
@@ -93,7 +93,7 @@ describe('Ed25519PersonaWithoutKey', () => {
 
   test('sign()', async () => {
     const expected =
-      'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCIsImtpZCI6ImRpZDpleGFtcGxlOmFiI2NvbnRyb2xsZXIifQ.eyJzYW1wbGUiOiJkYXRhIn0.b35qldVJvGoWuHfA8TG1phKWCkmE41EFrbflbOTnp2umi7iksCc4oDSaiB0g3dbMSnN1UuPfTajlqVadQialBg';
+      'eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDpleGFtcGxlOmFiI2NvbnRyb2xsZXIiLCJ0eXAiOiJKV1QifQ.eyJzYW1wbGUiOiJkYXRhIn0.s9IofF2fV8V_guP3SJ8Cllr9aiQXWTzAj1Z4dBz1kBBrcJlXWxOR6jdB7lLAy-WAQVY-zM89X3lLOsbLwP1WBQ';
     await expect(persona.sign({sample: 'data'})).resolves.toBe(expected);
   });
 });

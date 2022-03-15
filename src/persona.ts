@@ -1,5 +1,7 @@
 import {calculateJWKThumbprint} from './jwt';
-import {createJWS} from 'did-jwt';
+import {createJWS, Signer} from 'did-jwt';
+
+type Signable = Parameters<typeof createJWS>[0];
 
 abstract class Persona {
   public did: string;
@@ -12,7 +14,7 @@ abstract class Persona {
     const jwk = this.getMinimalJWK();
     return calculateJWKThumbprint(jwk);
   }
-  abstract sign(payload: any): any;
+  abstract sign(payload: Signable): Promise<string>;
 }
 
 export class PersonaWithECKey extends Persona {
@@ -33,7 +35,7 @@ export class PersonaWithECKey extends Persona {
 }
 
 export class PersonaWithoutKey extends Persona {
-  private signFunction: (data: string | Uint8Array) => Promise<string>;
+  private signFunction: Signer;
   private signAlgorithm: string;
   private minimalJwk: any;
   private kid: string;
@@ -43,14 +45,14 @@ export class PersonaWithoutKey extends Persona {
    *
    *  @param    {string}            did            did
    *  @param    {string}            kid            kid which will be included in minimal jwk's and JWT headers
-   *  @param    {(data: string | Uint8Array) => Promise<string>} sign a function to sign data
-   *  @param    {string}            signAlgorithm                     algorithm used by the sign function. Included in JWT headers
-   *  @param    {any}               minimalJwk                        minimalJwk which will be included in id tokens as `sub_jwk` claim
+   *  @param    {Signer}            sign           a function to sign data. Passed to createJWS() of the did-jwt package.
+   *  @param    {string}            signAlgorithm  algorithm used by the sign function. Included in JWT headers
+   *  @param    {any}               minimalJwk     minimalJwk which will be included in id tokens as `sub_jwk` claim
    */
   constructor(
     did: string,
     kid: string,
-    sign: (data: string | Uint8Array) => Promise<string>,
+    sign: Signer,
     signAlgorithm: string,
     minimalJwk: any,
   ) {
@@ -65,12 +67,17 @@ export class PersonaWithoutKey extends Persona {
     return this.minimalJwk;
   }
 
-  async sign(payload: any) {
-    return await createJWS(payload, this.signFunction, {
-      alg: this.signAlgorithm,
-      typ: 'JWT',
-      kid: this.kid,
-    });
+  async sign(payload: Signable) {
+    return await createJWS(
+      payload,
+      this.signFunction,
+      {
+        alg: this.signAlgorithm,
+        typ: 'JWT',
+        kid: this.kid,
+      },
+      {canonicalize: true},
+    );
   }
 }
 
