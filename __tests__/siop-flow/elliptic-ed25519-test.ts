@@ -13,7 +13,7 @@ jest.mock('../../src/jwt');
 
 fetchMock.enableMocks();
 
-describe('siop', () => {
+describe('SIOP Response Generation with An Ed25519 Key', () => {
   beforeEach(() => {
     // @ts-expect-error 2339
     fetch.resetMocks();
