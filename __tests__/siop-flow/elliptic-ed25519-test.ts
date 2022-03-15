@@ -6,7 +6,14 @@ import * as consts from '../consts';
 
 import * as utils from '../../src/sioputils';
 import * as jwtModule from '../../src/jwt';
-import {EdDSASigner, Signer, verifyJWT} from 'did-jwt';
+import {
+  createJWT,
+  decodeJWT,
+  EdDSASigner,
+  Signer,
+  verifyJWS,
+  verifyJWT,
+} from 'did-jwt';
 
 jest.mock('../../src/sioputils');
 jest.mock('../../src/jwt');
@@ -29,7 +36,7 @@ describe('siop', () => {
 
   const initialization = {
     kid: 'did:stub:ed25519-user-1#ed25519',
-    sign: EdDSASigner(consts.ed25519User.privateKeyHex) as (
+    sign: EdDSASigner(consts.ed25519User.privateKey) as (
       data: string | Uint8Array,
     ) => Promise<string>,
     signAlgorithm: 'EdDSA',
@@ -39,7 +46,7 @@ describe('siop', () => {
   const persona = new PersonaWithoutKey(
     'did:stub:ed25519-user-1',
     'did:stub:ed25519-user-1#ed25519',
-    EdDSASigner(consts.ed25519User.privateKeyHex) as Signer,
+    EdDSASigner(consts.ed25519User.privateKey) as Signer,
     'EdDSA',
     consts.ed25519User.minimalJwk,
   );
@@ -83,7 +90,7 @@ describe('siop', () => {
     const provider = new Provider(expiresIn, consts.defaultResolver);
 
     // @ts-expect-error 2322
-    utils.getIssuedAt.mockReturnValueOnce(1616669045);
+    utils.getIssuedAt.mockReturnValueOnce(1647333754);
 
     const idToken = await provider.generateIDToken(
       consts.requestObject,
@@ -105,16 +112,31 @@ describe('siop', () => {
           verificationMethod: [
             {
               id: 'did:stub:ed25519-user-1#ed25519',
-              type: 'Ed25519VerificationKey2018',
+              type: 'ED25519SignatureVerification',
               controller: 'did:stub:ed25519-user-1',
-              publicKeyBase58: '69SYXajEiKeBw31YRzSwkNx1vDWKL9Qg2BPoFTcEBGib',
+              publicKeyBase64: 'J4EX_BRMcjQPZ9DyMW6Dhs7_vyskKMnFH-98WX8dQm4',
             },
           ],
         },
       };
     };
 
-    await verifyJWT(idToken, {resolver: {resolve: resolver}});
+    // const jwt = await createJWT(
+    //   {test: 'test'},
+    //   {
+    //     alg: 'EdDSA',
+    //     issuer: 'did:stub:ed25519-user-1',
+    //     signer: EdDSASigner(consts.ed25519User.privateKeyHex),
+    //     canonicalize: true,
+    //   },
+    // );
+
+    console.log(await decodeJWT(idToken));
+
+    await verifyJWT(idToken, {
+      resolver: {resolve: resolver},
+      audience: 'https://example.com/home',
+    });
 
     // await expect(idToken).resolves.toBe(expectedIDToken);
   });

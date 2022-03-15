@@ -13,13 +13,13 @@ import {JWTHeader} from 'did-jwt';
 export const didUser = 'did:react-native-did-siop:user-1';
 
 export const ed25519User = {
-  privateKeyHex:
-    '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f67109702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710',
+  privateKey:
+    '9eV2fPFTMZUXYw8iaHa4bIFgzFg7wBN0TGvyVfXMDuUngRf8FExyNA9n0PIxboOGzv+/KyQoycUf73xZfx1Cbg==',
   minimalJwk: {
     kty: 'OKP',
     crv: 'Ed25519',
     // base64url-encoded public key.
-    x: 'THP2m9FHt3YXeQTSNeJBtJq3HVL7E9L7-pmuSJCqMkg',
+    x: 'J4EX_BRMcjQPZ9DyMW6Dhs7_vyskKMnFH-98WX8dQm4',
   },
   did: 'did:stub:ed25519-user-1',
   kid: 'did:stub:ed25519-user-1#ed25519',
