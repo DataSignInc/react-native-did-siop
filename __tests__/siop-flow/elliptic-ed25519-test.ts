@@ -6,7 +6,7 @@ import * as consts from '../consts';
 
 import * as utils from '../../src/sioputils';
 import * as jwtModule from '../../src/jwt';
-import {EdDSASigner, verifyJWT} from 'did-jwt';
+import {EdDSASigner, Signer, verifyJWT} from 'did-jwt';
 
 jest.mock('../../src/sioputils');
 jest.mock('../../src/jwt');
@@ -32,17 +32,15 @@ describe('siop', () => {
     sign: EdDSASigner(consts.ed25519User.privateKeyHex) as (
       data: string | Uint8Array,
     ) => Promise<string>,
-    signAlgorithm: 'Ed25519',
+    signAlgorithm: 'EdDSA',
     minimalJwk: consts.ed25519User.minimalJwk,
   };
 
   const persona = new PersonaWithoutKey(
     'did:stub:ed25519-user-1',
     'did:stub:ed25519-user-1#ed25519',
-    EdDSASigner(consts.ed25519User.privateKeyHex) as (
-      data: string | Uint8Array,
-    ) => Promise<string>,
-    'Ed25519',
+    EdDSASigner(consts.ed25519User.privateKeyHex) as Signer,
+    'EdDSA',
     consts.ed25519User.minimalJwk,
   );
 
@@ -108,7 +106,7 @@ describe('siop', () => {
             {
               id: 'did:stub:ed25519-user-1#ed25519',
               type: 'Ed25519VerificationKey2018',
-              controller: 'did:stub:ed25519-ed25519-user-1',
+              controller: 'did:stub:ed25519-user-1',
               publicKeyBase58: '69SYXajEiKeBw31YRzSwkNx1vDWKL9Qg2BPoFTcEBGib',
             },
           ],

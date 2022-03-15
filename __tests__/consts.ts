@@ -23,7 +23,7 @@ export const ed25519User = {
   },
   did: 'did:stub:ed25519-user-1',
   kid: 'did:stub:ed25519-user-1#ed25519',
-  signAlgorithm: 'Ed25519',
+  signAlgorithm: 'EdDSA',
 };
 
 const privateKeyHex =
