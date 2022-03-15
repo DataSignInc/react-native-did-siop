@@ -66,7 +66,6 @@ import {getResolver as getWebResolver} from 'web-did-resolver';
 ## Limitation / Future Tasks
 
 - We do not support JWE both for ID tokens and SIOP requests.
-- Currently we only support `secp256k1` ECC keys. RP can use other types of keys.
 - You need to choose personas based solely on the `client_id` of RP. Other parameters from RP are handled internally and kept private in this library.
 - Some parameter validations are omitted. These are:
   - Asserting `jwks` in `registration` parameter contains `iss` in request objects.
