@@ -68,11 +68,16 @@ export class PersonaWithoutKey extends Persona {
   }
 
   async sign(payload: Signable) {
-    return await createJWS(payload, this.signFunction, {
-      alg: this.signAlgorithm,
-      typ: 'JWT',
-      kid: this.kid,
-    });
+    return await createJWS(
+      payload,
+      this.signFunction,
+      {
+        alg: this.signAlgorithm,
+        typ: 'JWT',
+        kid: this.kid,
+      },
+      {canonicalize: true},
+    );
   }
 }
 
