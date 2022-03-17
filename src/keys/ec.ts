@@ -7,15 +7,16 @@ import {base64ToBase64url} from './encoding';
 // const ec = new EC(curve);
 
 export class ECKeyPair {
-  private keyPair: EC.KeyPair;
+  private privateKeyHex: string;
+  private publicKey: any;
 
   constructor(keyPair: EC.KeyPair) {
-    this.keyPair = keyPair;
+    this.privateKeyHex = keyPair.getPrivate().toString('hex');
+    this.publicKey = keyPair.getPublic();
   }
 
   async sign(payload: any, did: string) {
-    const privateKey = this.keyPair.getPrivate();
-    const signer = ES256KSigner(privateKey.toString('hex'));
+    const signer = ES256KSigner(this.privateKeyHex);
     return await createJWS(payload, signer, {
       alg: 'ES256K',
       typ: 'JWT',
@@ -24,7 +25,7 @@ export class ECKeyPair {
   }
 
   getJWK() {
-    const publicKey = this.keyPair.getPublic();
+    const publicKey = this.publicKey;
     const encodePoint = (point: Buffer) =>
       base64ToBase64url(point.toString('base64'));
 
