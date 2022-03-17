@@ -6,7 +6,7 @@ import {getMinimalJWK} from '../src/joseutils/jwk';
 
 const ec = new EC('secp256k1');
 
-describe('persona', () => {
+describe('secp256k1 PersonaWithoutKey', () => {
   const privateKeyHex =
     '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
   const key = ec.keyFromPrivate(privateKeyHex);
@@ -40,39 +40,7 @@ describe('persona', () => {
   });
 });
 
-describe('PersonaWithoutKey', () => {
-  const privateKeyHex =
-    '9702a6dd71bda7f7fdbf524b9c5dcdb8ba6aabd9df629373b0e31b46d68f6710';
-
-  const persona = new PersonaWithoutKey(
-    'did:example:ab',
-    'did:example:ab#controller',
-    ES256KSigner(privateKeyHex) as (
-      data: string | Uint8Array,
-    ) => Promise<string>,
-    'ES256K',
-    {
-      kty: 'EC',
-      crv: 'secp256k1',
-      x: 'rT61nvuz2LCRzx4W1EfEwGAiVgCuN6aKTW-PZ46qD1E',
-      y: 'ABGl1Pr6v7nVwvaa1g14m5M7oGgqs23Fpf780x-VJpM',
-    },
-  );
-
-  test('getSubjectIdentifier()', () => {
-    expect(persona.getSubjectIdentifier()).toBe(
-      'qXDc9pJnMIAOhF0ThPldiuR4v-yjB_l7JQVcME1x8VI',
-    );
-  });
-
-  test('sign()', async () => {
-    const expected =
-      'eyJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6ZXhhbXBsZTphYiNjb250cm9sbGVyIiwidHlwIjoiSldUIn0.eyJzYW1wbGUiOiJkYXRhIn0.8OQo-3CMWOqrZY8eFPk9j-IlJzo7tLnUk8lwVnMs0O_s6Y_NcBSv1R2mvK0-1NnhiHZPzLLtcN1lGOQRvdI1Eg';
-    await expect(persona.sign({sample: 'data'})).resolves.toBe(expected);
-  });
-});
-
-describe('Ed25519PersonaWithoutKey', () => {
+describe('Ed25519 PersonaWithoutKey', () => {
   const privateKeyHex =
     '9eV2fPFTMZUXYw8iaHa4bIFgzFg7wBN0TGvyVfXMDuUngRf8FExyNA9n0PIxboOGzv+/KyQoycUf73xZfx1Cbg==';
 
