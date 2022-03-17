@@ -103,8 +103,8 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
   test('able to verify ID token', async () => {
     const provider = new Provider(expiresIn, consts.defaultResolver);
 
-    // @ts-expect-error 2322
-    utils.getIssuedAt.mockReturnValueOnce(mockedNow);
+    // We here don't moch util.getIssuedAt() otherwise
+    // the verification fails due to the expiration check of the id token.
 
     const idToken = await provider.generateIDToken(
       consts.requestObject,
