@@ -19,3 +19,20 @@ export const getMinimalJWK = (publicKey: any) => {
     y: encodePoint(publicKey.getY().toArrayLike(Buffer, 'be', 32)),
   };
 };
+
+const publicKeyDerToMinimalJwk = (
+  publicKeyDer: Uint8Array,
+  crv: 'secp256k1' | 'Ed25519',
+) => {
+  let length: number;
+  switch (crv) {
+    case 'secp256k1':
+      const length = 64;
+      const boundaryIndex = length / 2;
+      const x = publicKeyDer.slice(0, boundaryIndex);
+      const y = publicKeyDer.slice(boundaryIndex);
+      return {kty: 'EC', crv, x, y};
+    case 'Ed25519':
+      return {kty: 'OKP', crv, publicKeyDer};
+  }
+};
