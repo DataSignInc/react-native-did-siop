@@ -27,7 +27,7 @@ describe('persona', () => {
   test('getMinimalJWK', async () => {
     const expected = {
       kty: 'EC',
-      crv: 'P-256K',
+      crv: 'secp256k1',
       x: 'rT61nvuz2LCRzx4W1EfEwGAiVgCuN6aKTW-PZ46qD1E',
       y: 'ABGl1Pr6v7nVwvaa1g14m5M7oGgqs23Fpf780x-VJpM',
     };
@@ -35,7 +35,7 @@ describe('persona', () => {
   });
 
   test('getSubjectIdentifier()', async () => {
-    const expected = 'dN-6gi0j9CipfcFlPYP76f7ypK-l3_svrVRc3IKjImA';
+    const expected = 'qXDc9pJnMIAOhF0ThPldiuR4v-yjB_l7JQVcME1x8VI';
     expect(persona.getSubjectIdentifier()).toBe(expected);
   });
 });
@@ -53,7 +53,7 @@ describe('PersonaWithoutKey', () => {
     'ES256K',
     {
       kty: 'EC',
-      crv: 'P-256K',
+      crv: 'secp256k1',
       x: 'rT61nvuz2LCRzx4W1EfEwGAiVgCuN6aKTW-PZ46qD1E',
       y: 'ABGl1Pr6v7nVwvaa1g14m5M7oGgqs23Fpf780x-VJpM',
     },
@@ -61,7 +61,7 @@ describe('PersonaWithoutKey', () => {
 
   test('getSubjectIdentifier()', () => {
     expect(persona.getSubjectIdentifier()).toBe(
-      'dN-6gi0j9CipfcFlPYP76f7ypK-l3_svrVRc3IKjImA',
+      'qXDc9pJnMIAOhF0ThPldiuR4v-yjB_l7JQVcME1x8VI',
     );
   });
 

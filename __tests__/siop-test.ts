@@ -26,8 +26,7 @@ describe('siop', () => {
     );
   });
   const expectedIDToken =
-    'eyJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2V4YW1wbGUuY29tL2hvbWUiLCJkaWQiOiJkaWQ6c3R1Yjp1c2VyLTEiLCJleHAiOjE2MTY2NzI2NDUsImlhdCI6MTYxNjY2OTA0NSwiaXNzIjoiaHR0cHM6Ly9zZWxmLWlzc3VlZC5tZSIsInN1YiI6IlY5dnB6NGxqMVFXMDQ3dDI5aFcyOHZQc1lTZ1dKbmpxUHJRb1BidF94MFkiLCJzdWJfandrIjp7ImNydiI6IlAtMjU2SyIsImt0eSI6IkVDIiwieCI6IkNYZzZoNUtoa3JrY2ZIWkNIVzNVMmRWaTUta0NJRE9haTVEQUozZnI2MVkiLCJ5IjoiNmJYRWRCcU1sQTVZdlZkY3NVUDlIZ1Nvd3lMMGVIeF9MNTFDT2g5VzJ6USJ9fQ.PtngTyhpEwFVrtPFxp3WpgJ22o61GKN1zAFdCzf0YzdR6GwUF_Tkgot3FnYto8QauwRaUztfkQZDC0BovPWR6A';
-
+    'eyJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2V4YW1wbGUuY29tL2hvbWUiLCJkaWQiOiJkaWQ6c3R1Yjp1c2VyLTEiLCJleHAiOjE2MTY2NzI2NDUsImlhdCI6MTYxNjY2OTA0NSwiaXNzIjoiaHR0cHM6Ly9zZWxmLWlzc3VlZC5tZSIsInN1YiI6IlY5dnB6NGxqMVFXMDQ3dDI5aFcyOHZQc1lTZ1dKbmpxUHJRb1BidF94MFkiLCJzdWJfandrIjp7ImNydiI6InNlY3AyNTZrMSIsImt0eSI6IkVDIiwieCI6IkNYZzZoNUtoa3JrY2ZIWkNIVzNVMmRWaTUta0NJRE9haTVEQUozZnI2MVkiLCJ5IjoiNmJYRWRCcU1sQTVZdlZkY3NVUDlIZ1Nvd3lMMGVIeF9MNTFDT2g5VzJ6USJ9fQ.Q0xvooUchulctOj6CVNm7EYuoHY9pWQGyun11_MvOhG1KQMS94HPnVy4aTfdLu6Opa-6qM0pgpqnbeYd289ppA';
   const persona = new PersonaWithoutKey(
     'did:stub:user-1',
     'did:stub:user-1#controller',
@@ -103,7 +102,7 @@ describe('siop', () => {
       state: undefined,
       sub: 'V9vpz4lj1QW047t29hW28vPsYSgWJnjqPrQoPbt_x0Y',
       sub_jwk: {
-        crv: 'P-256K',
+        crv: 'secp256k1',
         kty: 'EC',
         x: 'CXg6h5KhkrkcfHZCHW3U2dVi5-kCIDOai5DAJ3fr61Y',
         y: '6bXEdBqMlA5YvVdcsUP9HgSowyL0eHx_L51COh9W2zQ',

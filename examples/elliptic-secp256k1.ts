@@ -72,7 +72,7 @@ export const getMinimalJWK = (keyPair: EC.KeyPair) => {
       .replace(/[=]/g, '');
   return {
     kty: 'EC',
-    crv: 'P-256K',
+    crv: 'secp256k1',
     x: encodePoint(publicKey.getX().toArrayLike(Buffer, 'be', 32)),
     y: encodePoint(publicKey.getY().toArrayLike(Buffer, 'be', 32)),
   };

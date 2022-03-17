@@ -2,7 +2,7 @@ import {base64ToBase64url, encodeUint8ArrayInBase64url} from './encoding';
 
 export interface MinimalJwkSecp256k1 {
   kty: 'EC';
-  crv: 'secp256k1' | 'P-256K';
+  crv: 'secp256k1';
   x: string;
   y: string;
 }
@@ -23,7 +23,7 @@ export const getMinimalJWK = (publicKey: any): MinimalJwkSecp256k1 => {
     // The kty and crv values are defined here for secp256k1:
     //   https://datatracker.ietf.org/doc/html/draft-jones-webauthn-secp256k1-00#section-2
     kty: 'EC',
-    crv: 'P-256K',
+    crv: 'secp256k1',
     // We must specify the length parameter (32) to avoid 00-truncated Buffer instances.
     // Example:
     //   Expected:
