@@ -26,7 +26,7 @@ let location = await provider.generateResponse(
     kid: 'did:example:persona1#controller',
     sign: signFunction,
     alg: 'ES256K',
-    minimalJwk: minimalJWK,
+    publicKey: publicKeyUint8Array,
   },
   {vp_uri: 'https://credentials.example.xyz/12345'},
 );

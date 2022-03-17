@@ -26,12 +26,10 @@ const signIn = async () => {
         '9eV2fPFTMZUXYw8iaHa4bIFgzFg7wBN0TGvyVfXMDuUngRf8FExyNA9n0PIxboOGzv+/KyQoycUf73xZfx1Cbg==',
       ) as (data: string | Uint8Array) => Promise<string>,
       signAlgorithm: 'EdDSA',
-      minimalJwk: {
-        kty: 'OKP',
-        crv: 'Ed25519',
-        // It's the latter part of the private key above.
-        x: 'J4EX_BRMcjQPZ9DyMW6Dhs7_vyskKMnFH-98WX8dQm4',
-      },
+      publicKey: new Uint8Array([
+        39, 129, 23, 252, 20, 76, 114, 52, 15, 103, 208, 242, 49, 110, 131, 134,
+        206, 255, 191, 43, 36, 40, 201, 197, 31, 239, 124, 89, 127, 29, 66, 110,
+      ]),
     });
     await Linking.openURL(location);
   } catch (error) {
