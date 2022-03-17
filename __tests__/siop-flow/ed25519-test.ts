@@ -28,7 +28,10 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
   const ed25519User = {
     privateKey:
       '9eV2fPFTMZUXYw8iaHa4bIFgzFg7wBN0TGvyVfXMDuUngRf8FExyNA9n0PIxboOGzv+/KyQoycUf73xZfx1Cbg==',
-    publicKey: 'J4EX_BRMcjQPZ9DyMW6Dhs7_vyskKMnFH-98WX8dQm4',
+    publicKey: new Uint8Array([
+      39, 129, 23, 252, 20, 76, 114, 52, 15, 103, 208, 242, 49, 110, 131, 134,
+      206, 255, 191, 43, 36, 40, 201, 197, 31, 239, 124, 89, 127, 29, 66, 110,
+    ]),
     minimalJwk: {
       kty: 'OKP',
       crv: 'Ed25519',
@@ -37,7 +40,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
     },
     did: 'did:stub:ed25519-user-1',
     kid: 'did:stub:ed25519-user-1#ed25519',
-    alg: 'EdDSA',
+    alg: 'EdDSA' as const,
   };
 
   const mockedNow = 1647333754;
@@ -51,7 +54,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
       data: string | Uint8Array,
     ) => Promise<string>,
     alg: ed25519User.alg,
-    minimalJwk: ed25519User.minimalJwk,
+    publicKey: ed25519User.publicKey,
   };
 
   const persona = new PersonaWithoutKey(
@@ -59,7 +62,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
     ed25519User.kid,
     EdDSASigner(ed25519User.privateKey) as Signer,
     ed25519User.alg,
-    ed25519User.minimalJwk,
+    ed25519User.publicKey,
   );
 
   const resolve = async (did: string) => {

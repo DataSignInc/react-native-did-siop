@@ -83,15 +83,15 @@ export default class Provider {
     keyOptions: {
       kid: string;
       sign: (data: string | Uint8Array) => Promise<string>;
-      alg: string;
-      minimalJwk: any;
+      alg: 'ES256K' | 'EdDSA';
+      publicKey: Uint8Array;
     },
     additionalFields?: any,
   ) {
     let persona: Persona;
 
-    const {sign, alg, minimalJwk, kid} = keyOptions;
-    persona = new PersonaWithoutKey(did, kid, sign, alg, minimalJwk);
+    const {sign, alg, publicKey, kid} = keyOptions;
+    persona = new PersonaWithoutKey(did, kid, sign, alg, publicKey);
 
     try {
       const request: RequestObject = this.requestObject;

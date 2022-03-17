@@ -20,11 +20,22 @@ export const getMinimalJWK = (publicKey: any) => {
   };
 };
 
-const publicKeyDerToMinimalJwk = (
+const convertAlgorithm2Curve = (alg: 'ES256K' | 'EdDSA') => {
+  const algCrvMap = {
+    ES256K: 'secp256k1',
+    EdDSA: 'Ed25519',
+  };
+  if (alg in algCrvMap) {
+    return algCrvMap[alg];
+  }
+  throw Error('algorithm not supported');
+};
+
+export const deriveMinimalJwk = (
   publicKeyDer: Uint8Array,
-  crv: 'secp256k1' | 'Ed25519',
+  alg: 'ES256K' | 'EdDSA',
 ) => {
-  let length: number;
+  const crv = convertAlgorithm2Curve(alg);
   switch (crv) {
     case 'secp256k1':
       const length = 64;
@@ -34,5 +45,9 @@ const publicKeyDerToMinimalJwk = (
       return {kty: 'EC', crv, x, y};
     case 'Ed25519':
       return {kty: 'OKP', crv, publicKeyDer};
+    default:
+      throw Error('curve not supported');
   }
 };
+
+const encodeInBase64url = uint8array;
