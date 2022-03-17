@@ -2,7 +2,6 @@ import {ec as EC} from 'elliptic';
 
 import {DIDResolutionResult, ParsedDID, Resolver} from 'did-resolver';
 
-import {getResolver as getEthrResolver} from 'ethr-did-resolver';
 import {getResolver as getWebResolver} from 'web-did-resolver';
 
 const ec = new EC('secp256k1');
@@ -101,9 +100,6 @@ export const jwtHeader: JWTHeader = {
   alg: 'ES256K',
 };
 
-const ethrResolver = getEthrResolver({
-  rpcUrl: 'https://ropsten.infura.io/v3/e0a6ac9a2c4a4722970325c36b728415',
-});
 const webResolver = getWebResolver();
 
 export const resolve = async (
@@ -139,6 +135,5 @@ export const resolve = async (
 
 export const defaultResolver = new Resolver({
   ...{stub: resolve},
-  ...ethrResolver,
   ...webResolver,
 });
