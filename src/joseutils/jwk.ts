@@ -69,6 +69,3 @@ export const deriveMinimalJwk = (
       throw Error('curve not supported');
   }
 };
-
-const encodeInBase64url = (point: Buffer) =>
-  base64ToBase64url(point.toString('base64'));
