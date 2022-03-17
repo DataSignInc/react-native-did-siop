@@ -1,9 +1,9 @@
-import * as JWT from '../src/jwt';
+import * as JWT from '../src/joseutils/jwt';
 import SIOPValidator from '../src/validator';
 import {SIOPRequestValidationError} from '../src/error';
 import * as consts from './consts';
 
-jest.mock('../src/jwt');
+jest.mock('../src/joseutils/jwt');
 
 describe('request validation', () => {
   const validator = new SIOPValidator(consts.defaultResolver);

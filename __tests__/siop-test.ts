@@ -5,12 +5,12 @@ import Provider from '../src/siop';
 import * as consts from './consts';
 
 import * as utils from '../src/sioputils';
-import * as jwtModule from '../src/jwt';
+import * as jwtModule from '../src/joseutils/jwt';
 import {SIOPRequestValidationError} from '../src/error';
 import {ES256KSigner} from 'did-jwt';
-import {getMinimalJWK} from '../src/jwk';
+import {getMinimalJWK} from '../src/joseutils/jwk';
 jest.mock('../src/sioputils');
-jest.mock('../src/jwt');
+jest.mock('../src/joseutils/jwt');
 
 fetchMock.enableMocks();
 

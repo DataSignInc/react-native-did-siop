@@ -1,7 +1,7 @@
 import {JWTHeader, decodeJWT} from 'did-jwt';
 import {Resolver} from 'did-resolver';
 import {SIOPRequestValidationError} from './error';
-import {verifyJWT} from './jwt';
+import {verifyJWT} from './joseutils/jwt';
 import {debug} from './log';
 import {Registration, Request, RequestObject} from './siop-schema';
 import {getRegistration, getJwks, getRequestObject} from './sioputils';

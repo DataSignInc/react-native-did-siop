@@ -1,6 +1,6 @@
-import {calculateJWKThumbprint} from './jwt';
+import {calculateJWKThumbprint} from './joseutils/jwt';
 import {createJWS, Signer} from 'did-jwt';
-import {deriveMinimalJwk, MinimalJwk} from './jwk';
+import {deriveMinimalJwk, MinimalJwk} from './joseutils/jwk';
 
 type Signable = Parameters<typeof createJWS>[0];
 

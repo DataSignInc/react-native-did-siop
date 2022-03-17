@@ -2,7 +2,7 @@ import {PersonaWithoutKey} from '../src/persona';
 import {ec as EC} from 'elliptic';
 
 import {EdDSASigner, ES256KSigner} from 'did-jwt';
-import {getMinimalJWK} from '../src/jwk';
+import {getMinimalJWK} from '../src/joseutils/jwk';
 
 const ec = new EC('secp256k1');
 

@@ -1,4 +1,4 @@
-import {base64ToBase64url, encodeUint8ArrayInBase64url} from './keys/encoding';
+import {base64ToBase64url, encodeUint8ArrayInBase64url} from './encoding';
 
 export interface MinimalJwkSecp256k1 {
   kty: 'EC';
@@ -49,7 +49,7 @@ const convertAlgorithm2Curve = (alg: 'ES256K' | 'EdDSA') => {
 export const deriveMinimalJwk = (
   publicKeyDer: Uint8Array,
   alg: 'ES256K' | 'EdDSA',
-): MinimalJwkEd25519 | MinimalJwkSecp256k1 => {
+): MinimalJwk => {
   const crv = convertAlgorithm2Curve(alg);
   switch (crv) {
     case 'secp256k1':

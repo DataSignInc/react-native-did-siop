@@ -8,7 +8,7 @@ import {
 import Persona, {PersonaWithoutKey} from './persona';
 import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
 import {Resolver} from 'did-resolver';
-import {MinimalJwk} from './jwk';
+import {MinimalJwk} from './joseutils/jwk';
 
 export default class Provider {
   private expiresIn: number;

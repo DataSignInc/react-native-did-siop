@@ -5,11 +5,11 @@ import Provider from '../../src/siop';
 import * as consts from '../consts';
 
 import * as utils from '../../src/sioputils';
-import * as jwtModule from '../../src/jwt';
+import * as jwtModule from '../../src/joseutils/jwt';
 import {EdDSASigner, Signer, verifyJWT} from 'did-jwt';
 
 jest.mock('../../src/sioputils');
-jest.mock('../../src/jwt');
+jest.mock('../../src/joseutils/jwt');
 
 fetchMock.enableMocks();
 

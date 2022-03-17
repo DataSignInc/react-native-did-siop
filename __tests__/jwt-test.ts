@@ -1,4 +1,4 @@
-import * as JWT from '../src/jwt';
+import * as JWT from '../src/joseutils/jwt';
 import {defaultResolver} from './consts';
 
 describe('jwt', () => {
