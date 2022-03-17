@@ -1,6 +1,6 @@
 import {calculateJWKThumbprint} from './jwt';
 import {createJWS, Signer} from 'did-jwt';
-import {deriveMinimalJwk} from './jwk';
+import {deriveMinimalJwk, MinimalJwk} from './jwk';
 
 type Signable = Parameters<typeof createJWS>[0];
 
@@ -38,13 +38,14 @@ export class PersonaWithoutKey extends Persona {
     kid: string,
     sign: Signer,
     alg: 'ES256K' | 'EdDSA',
-    publicKey: Uint8Array,
+    publicKey: Uint8Array | MinimalJwk,
   ) {
     super(did);
     this.kid = kid;
     this.signFunction = sign;
     this.signAlgorithm = alg;
-    this.minimalJwk = deriveMinimalJwk(publicKey, alg);
+    this.minimalJwk =
+      'kty' in publicKey ? publicKey : deriveMinimalJwk(publicKey, alg);
   }
 
   getMinimalJWK() {

@@ -1,6 +1,21 @@
-import {base64ToBase64url} from './keys/encoding';
+import {base64ToBase64url, encodeUint8ArrayInBase64url} from './keys/encoding';
 
-export const getMinimalJWK = (publicKey: any) => {
+export interface MinimalJwkSecp256k1 {
+  kty: 'EC';
+  crv: 'secp256k1' | 'P-256K';
+  x: string;
+  y: string;
+}
+
+export interface MinimalJwkEd25519 {
+  kty: 'OKP';
+  crv: 'Ed25519';
+  x: string;
+}
+
+export type MinimalJwk = MinimalJwkEd25519 | MinimalJwkSecp256k1;
+
+export const getMinimalJWK = (publicKey: any): MinimalJwkSecp256k1 => {
   const encodePoint = (point: Buffer) =>
     base64ToBase64url(point.toString('base64'));
 
@@ -34,7 +49,7 @@ const convertAlgorithm2Curve = (alg: 'ES256K' | 'EdDSA') => {
 export const deriveMinimalJwk = (
   publicKeyDer: Uint8Array,
   alg: 'ES256K' | 'EdDSA',
-) => {
+): MinimalJwkEd25519 | MinimalJwkSecp256k1 => {
   const crv = convertAlgorithm2Curve(alg);
   switch (crv) {
     case 'secp256k1':
@@ -42,12 +57,18 @@ export const deriveMinimalJwk = (
       const boundaryIndex = length / 2;
       const x = publicKeyDer.slice(0, boundaryIndex);
       const y = publicKeyDer.slice(boundaryIndex);
-      return {kty: 'EC', crv, x, y};
+      return {
+        kty: 'EC',
+        crv,
+        x: encodeUint8ArrayInBase64url(x),
+        y: encodeUint8ArrayInBase64url(y),
+      };
     case 'Ed25519':
-      return {kty: 'OKP', crv, publicKeyDer};
+      return {kty: 'OKP', crv, x: encodeUint8ArrayInBase64url(publicKeyDer)};
     default:
       throw Error('curve not supported');
   }
 };
 
-const encodeInBase64url = uint8array;
+const encodeInBase64url = (point: Buffer) =>
+  base64ToBase64url(point.toString('base64'));

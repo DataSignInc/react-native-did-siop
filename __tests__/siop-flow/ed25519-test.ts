@@ -32,6 +32,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
       39, 129, 23, 252, 20, 76, 114, 52, 15, 103, 208, 242, 49, 110, 131, 134,
       206, 255, 191, 43, 36, 40, 201, 197, 31, 239, 124, 89, 127, 29, 66, 110,
     ]),
+    publicKeyBase64url: 'J4EX_BRMcjQPZ9DyMW6Dhs7_vyskKMnFH-98WX8dQm4',
     minimalJwk: {
       kty: 'OKP',
       crv: 'Ed25519',
@@ -81,7 +82,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
             id: ed25519User.kid,
             type: 'ED25519SignatureVerification',
             controller: ed25519User.did,
-            publicKeyBase64: ed25519User.publicKey,
+            publicKeyBase64: ed25519User.publicKeyBase64url,
           },
         ],
       },

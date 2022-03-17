@@ -128,7 +128,7 @@ describe('siop', () => {
           consts.sekp256k1KeyOfUser1.getPrivate().toString('hex'),
         ) as (data: string | Uint8Array) => Promise<string>,
         alg: 'ES256K',
-        minimalJwk: getMinimalJWK(consts.sekp256k1KeyOfUser1.getPublic()),
+        publicKey: getMinimalJWK(consts.sekp256k1KeyOfUser1.getPublic()),
       }),
     ).resolves.toMatch(`https://example.com/home#id_token=${expectedIDToken}`);
   });

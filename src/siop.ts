@@ -8,6 +8,7 @@ import {
 import Persona, {PersonaWithoutKey} from './persona';
 import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
 import {Resolver} from 'did-resolver';
+import {MinimalJwk} from './jwk';
 
 export default class Provider {
   private expiresIn: number;
@@ -84,7 +85,7 @@ export default class Provider {
       kid: string;
       sign: (data: string | Uint8Array) => Promise<string>;
       alg: 'ES256K' | 'EdDSA';
-      publicKey: Uint8Array;
+      publicKey: Uint8Array | MinimalJwk;
     },
     additionalFields?: any,
   ) {
