@@ -17,23 +17,6 @@ abstract class Persona {
   abstract sign(payload: Signable): Promise<string>;
 }
 
-export class PersonaWithECKey extends Persona {
-  private keyPair: any;
-
-  constructor(did: string, keyPair: any) {
-    super(did);
-    this.keyPair = keyPair;
-  }
-
-  getMinimalJWK() {
-    return this.keyPair.getJWK();
-  }
-
-  async sign(payload: any) {
-    return this.keyPair.sign(payload, this.did);
-  }
-}
-
 export class PersonaWithoutKey extends Persona {
   private signFunction: Signer;
   private signAlgorithm: string;
@@ -46,20 +29,20 @@ export class PersonaWithoutKey extends Persona {
    *  @param    {string}            did            did
    *  @param    {string}            kid            kid which will be included in minimal jwk's and JWT headers
    *  @param    {Signer}            sign           a function to sign data. Passed to createJWS() of the did-jwt package.
-   *  @param    {string}            signAlgorithm  algorithm used by the sign function. Included in JWT headers
+   *  @param    {string}            alg  algorithm used by the sign function. Included in JWT headers
    *  @param    {any}               minimalJwk     minimalJwk which will be included in id tokens as `sub_jwk` claim
    */
   constructor(
     did: string,
     kid: string,
     sign: Signer,
-    signAlgorithm: string,
+    alg: string,
     minimalJwk: any,
   ) {
     super(did);
     this.kid = kid;
     this.signFunction = sign;
-    this.signAlgorithm = signAlgorithm;
+    this.signAlgorithm = alg;
     this.minimalJwk = minimalJwk;
   }
 

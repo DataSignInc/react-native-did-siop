@@ -127,7 +127,7 @@ describe('siop', () => {
         sign: ES256KSigner(
           consts.sekp256k1KeyOfUser1.getPrivate().toString('hex'),
         ) as (data: string | Uint8Array) => Promise<string>,
-        signAlgorithm: 'ES256K',
+        alg: 'ES256K',
         minimalJwk: getMinimalJWK(consts.sekp256k1KeyOfUser1.getPublic()),
       }),
     ).resolves.toMatch(`https://example.com/home#id_token=${expectedIDToken}`);
