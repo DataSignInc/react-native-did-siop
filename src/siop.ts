@@ -5,10 +5,8 @@ import {
   SIOPRequestValidationError,
   SIOPResponseGenerationError,
 } from './error';
-import Persona, {PersonaWithECKey, PersonaWithoutKey} from './persona';
+import Persona, {PersonaWithoutKey} from './persona';
 import {getIssuedAt, parseSIOPRequestUri} from './sioputils';
-import {ECKeyPair} from './keys/ec';
-import {ec as EC} from 'elliptic';
 import {Resolver} from 'did-resolver';
 
 export default class Provider {
@@ -82,34 +80,18 @@ export default class Provider {
 
   async generateResponse(
     did: string,
-    keyPair:
-      | EC.KeyPair
-      | {
-          kid: string;
-          sign: (data: string | Uint8Array) => Promise<string>;
-          signAlgorithm: string;
-          minimalJwk: any;
-        },
+    keyOptions: {
+      kid: string;
+      sign: (data: string | Uint8Array) => Promise<string>;
+      alg: string;
+      minimalJwk: any;
+    },
     additionalFields?: any,
   ) {
     let persona: Persona;
-    if (
-      'sign' in keyPair &&
-      'minimalJwk' in keyPair &&
-      'signAlgorithm' in keyPair &&
-      'kid' in keyPair
-    ) {
-      const {sign, signAlgorithm, minimalJwk, kid} = keyPair;
-      persona = new PersonaWithoutKey(
-        did,
-        kid,
-        sign,
-        signAlgorithm,
-        minimalJwk,
-      );
-    } else {
-      persona = new PersonaWithECKey(did, new ECKeyPair(keyPair));
-    }
+
+    const {sign, alg, minimalJwk, kid} = keyOptions;
+    persona = new PersonaWithoutKey(did, kid, sign, alg, minimalJwk);
 
     try {
       const request: RequestObject = this.requestObject;

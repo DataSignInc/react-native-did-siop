@@ -1,13 +1,14 @@
 import fetchMock from 'jest-fetch-mock';
 
-import {ECKeyPair} from '../src/keys/ec';
-import {PersonaWithECKey} from '../src/persona';
+import {PersonaWithoutKey} from '../src/persona';
 import Provider from '../src/siop';
 import * as consts from './consts';
 
 import * as utils from '../src/sioputils';
 import * as jwtModule from '../src/jwt';
 import {SIOPRequestValidationError} from '../src/error';
+import {ES256KSigner} from 'did-jwt';
+import {getMinimalJWK} from '../src/jwk';
 jest.mock('../src/sioputils');
 jest.mock('../src/jwt');
 
@@ -25,13 +26,15 @@ describe('siop', () => {
     );
   });
   const expectedIDToken =
-    'eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciJ9.eyJpc3MiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lIiwic3ViIjoiVjl2cHo0bGoxUVcwNDd0MjloVzI4dlBzWVNnV0puanFQclFvUGJ0X3gwWSIsImRpZCI6ImRpZDpzdHViOnVzZXItMSIsImF1ZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vaG9tZSIsImlhdCI6MTYxNjY2OTA0NSwiZXhwIjoxNjE2NjcyNjQ1LCJzdWJfandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTZLIiwieCI6IkNYZzZoNUtoa3JrY2ZIWkNIVzNVMmRWaTUta0NJRE9haTVEQUozZnI2MVkiLCJ5IjoiNmJYRWRCcU1sQTVZdlZkY3NVUDlIZ1Nvd3lMMGVIeF9MNTFDT2g5VzJ6USJ9fQ._VL3g6H49Ym7doVnlq8tz8JmvDzbZ7YCr-GSVR_mFlEDglVvafz4HGlFr51KtmymQcGHacqbqvNW9VrrDn173w';
+    'eyJhbGciOiJFUzI1NksiLCJraWQiOiJkaWQ6c3R1Yjp1c2VyLTEjY29udHJvbGxlciIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2V4YW1wbGUuY29tL2hvbWUiLCJkaWQiOiJkaWQ6c3R1Yjp1c2VyLTEiLCJleHAiOjE2MTY2NzI2NDUsImlhdCI6MTYxNjY2OTA0NSwiaXNzIjoiaHR0cHM6Ly9zZWxmLWlzc3VlZC5tZSIsInN1YiI6IlY5dnB6NGxqMVFXMDQ3dDI5aFcyOHZQc1lTZ1dKbmpxUHJRb1BidF94MFkiLCJzdWJfandrIjp7ImNydiI6IlAtMjU2SyIsImt0eSI6IkVDIiwieCI6IkNYZzZoNUtoa3JrY2ZIWkNIVzNVMmRWaTUta0NJRE9haTVEQUozZnI2MVkiLCJ5IjoiNmJYRWRCcU1sQTVZdlZkY3NVUDlIZ1Nvd3lMMGVIeF9MNTFDT2g5VzJ6USJ9fQ.PtngTyhpEwFVrtPFxp3WpgJ22o61GKN1zAFdCzf0YzdR6GwUF_Tkgot3FnYto8QauwRaUztfkQZDC0BovPWR6A';
 
-  const persona = new PersonaWithECKey(
+  const persona = new PersonaWithoutKey(
     'did:stub:user-1',
-    new ECKeyPair(consts.sekp256k1KeyOfUser1),
+    'did:stub:user-1#controller',
+    ES256KSigner(consts.sekp256k1KeyOfUser1.getPrivate().toString('hex')),
+    'ES256K',
+    getMinimalJWK(consts.sekp256k1KeyOfUser1.getPublic()),
   );
-
   const did = 'did:stub:user-1';
 
   const expiresIn = 3600;
@@ -119,7 +122,14 @@ describe('siop', () => {
     await provider.receiveRequest(consts.request);
 
     await expect(
-      provider.generateResponse(did, consts.sekp256k1KeyOfUser1),
+      provider.generateResponse(did, {
+        kid: 'did:stub:user-1#controller',
+        sign: ES256KSigner(
+          consts.sekp256k1KeyOfUser1.getPrivate().toString('hex'),
+        ) as (data: string | Uint8Array) => Promise<string>,
+        alg: 'ES256K',
+        minimalJwk: getMinimalJWK(consts.sekp256k1KeyOfUser1.getPublic()),
+      }),
     ).resolves.toMatch(`https://example.com/home#id_token=${expectedIDToken}`);
   });
 });

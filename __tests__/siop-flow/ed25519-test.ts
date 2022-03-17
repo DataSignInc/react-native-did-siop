@@ -37,7 +37,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
     },
     did: 'did:stub:ed25519-user-1',
     kid: 'did:stub:ed25519-user-1#ed25519',
-    signAlgorithm: 'EdDSA',
+    alg: 'EdDSA',
   };
 
   const mockedNow = 1647333754;
@@ -50,7 +50,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
     sign: EdDSASigner(ed25519User.privateKey) as (
       data: string | Uint8Array,
     ) => Promise<string>,
-    signAlgorithm: ed25519User.signAlgorithm,
+    alg: ed25519User.alg,
     minimalJwk: ed25519User.minimalJwk,
   };
 
@@ -58,7 +58,7 @@ describe('SIOP Response Generation with An Ed25519 Key', () => {
     ed25519User.did,
     ed25519User.kid,
     EdDSASigner(ed25519User.privateKey) as Signer,
-    ed25519User.signAlgorithm,
+    ed25519User.alg,
     ed25519User.minimalJwk,
   );
 
