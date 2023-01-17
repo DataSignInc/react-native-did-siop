@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/gh/DataSignInc/react-native-did-siop/branch/main/graph/badge.svg?token=0NP95CEWE8)](https://codecov.io/gh/DataSignInc/react-native-did-siop)
 
-Yet another SIOP library! It focuses to provide clean and universal APIs to implement the SIOP authentication flow in DID wallets. It runs on browser environments as well as on mobile devices.
+Yet another SIOP library! It focuses on providing clean and universal APIs to implement the SIOP authentication flow in DID wallets. It runs on browser environments as well as on mobile devices.
 
 ## Targeting Specifications
 
